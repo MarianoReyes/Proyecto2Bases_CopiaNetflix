@@ -15,9 +15,10 @@ body {
 }
 .login-header {
   text-align: center;
-  font-family: "vardhana", cursive;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
   font-size: 35px;
-  background: linear-gradient(to bottom, #00bfff 0%, #5b6d7c 100%);
+  background: linear-gradient(to bottom, #28a745 0%, #3b473b 100%);
   color: #fff;
   position: relative;
   box-shadow: 1px 3px 14px rgba(0, 0, 0, 0.5);

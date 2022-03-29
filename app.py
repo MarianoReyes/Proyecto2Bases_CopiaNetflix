@@ -1,4 +1,5 @@
 # app.py
+from cmath import acos
 from flask import Flask, request, session, redirect, url_for, render_template, flash
 import psycopg2  # pip install psycopg2
 import psycopg2.extras
@@ -29,6 +30,24 @@ def home():
     return redirect(url_for('login'))
 
 
+@app.route('/home_admin')
+def home_admin():
+    # Check if user is loggedin
+    if 'loggedin' in session:
+
+        # User is loggedin show them the home page
+        return render_template('home_admin.html', username=session['username'])
+
+    # User is not loggedin redirect to login page
+    return redirect(url_for('login'))
+
+
+@app.route('/perfiles')
+# Prueba para crear perfiles
+def perfiles():
+    return redirect(url_for('home'))
+
+
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
@@ -55,8 +74,12 @@ def login():
                 session['id'] = account['id']
                 session['username'] = account['username']
 
-                # Redirect to home page
-                return redirect(url_for('home'))
+                if account['admin'] == 1:
+                    return redirect(url_for('home_admin'))
+                else:
+                    # Redirect to home page
+                    return redirect(url_for('home'))
+
             else:
                 # Account doesnt exist or username/password incorrect
                 flash('Incorrect username/password')
