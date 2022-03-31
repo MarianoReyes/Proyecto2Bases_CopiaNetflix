@@ -60,14 +60,14 @@ def login():
 
         # Check if account exists using MySQL
         cursor.execute(
-            'SELECT * FROM usuarios WHERE username = %s', (username,))
+            'SELECT * FROM cuentas WHERE username = %s', (username,))
         # Fetch one record and return result
         account = cursor.fetchone()
 
         if account:
             password_rs = account['password']
             print(password_rs)
-            # If account exists in usuarios table in out database
+            # If account exists in cuentas table in out database
             if check_password_hash(password_rs, password):
                 # Create session data, we can access this data in other routes
                 session['loggedin'] = True
@@ -101,34 +101,34 @@ def register():
         username = request.form['username']
         password = request.form['password']
         email = request.form['email']
+        tipocuenta = request.form['tipocuenta']
         admin = 0
 
-        _hashed_password = generate_password_hash(
-            password, method='pbkdf2:sha256', salt_length=16)
+        _hashed_password = generate_password_hash(password)
 
         # Check if account exists using MySQL
         cursor.execute(
-            'SELECT * FROM usuarios WHERE username = %s', (username,))
+            'SELECT * FROM cuentas WHERE username = %s', (username,))
         account = cursor.fetchone()
         print(account)
         # If account exists show error and validation checks
         if account:
-            flash('Account already exists!')
+            flash('La cuenta ya existe!')
         elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
-            flash('Invalid email address!')
+            flash('Dirección de correo invalida!')
         elif not re.match(r'[A-Za-z0-9]+', username):
-            flash('Username must contain only characters and numbers!')
+            flash('El usuario solo puede tener caracteres y números!')
         elif not username or not password or not email:
-            flash('Please fill out the form!')
+            flash('Por favor llene el formulario!')
         else:
-            # Account doesnt exists and the form data is valid, now insert new account into usuarios table
-            cursor.execute("INSERT INTO usuarios (fullname, username, password, email, admin) VALUES (%s,%s,%s,%s,%s)",
-                           (fullname, username, _hashed_password, email, admin))
+            # Account doesnt exists and the form data is valid, now insert new account into cuentas table
+            cursor.execute("INSERT INTO cuentas (fullname, username, password, email, tipocuenta, admin) VALUES (%s,%s,%s,%s,%s,%s)",
+                           (fullname, username, _hashed_password, email, tipocuenta, admin))
             conn.commit()
-            flash('You have successfully registered!')
+            flash('Te has registrado correctamente!')
     elif request.method == 'POST':
         # Form is empty... (no POST data)
-        flash('Please fill out the form!')
+        flash('Por favor llene el formulario!')
     # Show registration form with message (if any)
     return render_template('register.html')
 
@@ -149,7 +149,7 @@ def profile():
 
     # Check if user is loggedin
     if 'loggedin' in session:
-        cursor.execute('SELECT * FROM usuarios WHERE id = %s', [session['id']])
+        cursor.execute('SELECT * FROM cuentas WHERE id = %s', [session['id']])
         account = cursor.fetchone()
         # Show the profile page with account info
         return render_template('profile.html', account=account)

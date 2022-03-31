@@ -63,6 +63,13 @@ input,
 input::-webkit-input-placeholder {
   font-size: 11px;
   padding-top: 3px;
+  color: #495057;
+}
+
+.select{
+  font-size: 11px;
+  padding: 8px 12px!important;
+  color: #495057;
 }
 
 .main-login {
