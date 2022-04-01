@@ -42,10 +42,28 @@ def home_admin():
     return redirect(url_for('login'))
 
 
-@app.route('/perfiles')
-# Prueba para crear perfiles
-def perfiles():
-    return redirect(url_for('home'))
+@app.route('/crear_perfil', methods=['GET', 'POST'])
+# manda a pestaña para crear perfil
+def crear_perfil():
+
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    cursor.execute('SELECT * FROM cuentas WHERE id = %s', [session['id']])
+    account = cursor.fetchone()
+
+    # Check if "username", "password" and "email" POST requests exist (user submitted form)
+    if request.method == 'POST' and 'nombreperfil' in request.form:
+        nombre_perfil = request.form['nombreperfil']
+        email = account['email']
+        fecha_ingreso = '2022-03-31'
+        hora_ingreso = '05:49'
+
+        # Account doesnt exists and the form data is valid, now insert new account into cuentas table
+        cursor.execute("INSERT INTO perfiles (nombre_perfil, email, fecha_ingreso, hora_ingreso) VALUES (%s,%s,%s,%s)",
+                       (nombre_perfil, email, fecha_ingreso, hora_ingreso))
+        conn.commit()
+
+    return render_template('crear_perfil.html', username=session['username'])
 
 
 @app.route('/login/', methods=['GET', 'POST'])

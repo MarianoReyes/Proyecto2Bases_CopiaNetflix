@@ -3,6 +3,31 @@ body {
   margin: 0;
 }
 
+.btn {
+  background: linear-gradient(to bottom, #2863a7 0%, #7545b4 100%)!important;
+  border-color: #2863a7!important;;
+}
+
+.btn:hover {
+  background: linear-gradient(to bottom, #4184d1 0%, #9664d8 100%)!important;
+  border-color:#4184d1!important;
+}
+
+.btn-perfil{
+  padding: 50px!important;
+  width: 80%;
+  color: #fff;
+}
+
+.btn-perfil:hover{
+  color: #fff;
+}
+
+.centrado{
+  display: flex;
+  justify-content: center;
+}
+
 .login-box {
   height: 50%;
   width: 30%;
@@ -18,7 +43,7 @@ body {
   font-family: "Montserrat", sans-serif;
   font-weight: 600;
   font-size: 35px;
-  background: linear-gradient(to bottom, #28a745 0%, #3b473b 100%);
+  background: linear-gradient(to bottom, #2863a7 0%, #7545b4 100%);
   color: #fff;
   position: relative;
   box-shadow: 1px 3px 14px rgba(0, 0, 0, 0.5);

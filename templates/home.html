@@ -3,6 +3,27 @@
 {% block title %}Home{% endblock %}
   
 {% block content %}
-<h1 class="h2">Dashboard</h1>
+<h1 class="h2">Dashboard de Cuenta</h1>
 <p>Welcome back, {{ username }}!</p>
+
+
+<div class=" container">
+    <div class=" row">
+        
+        <div class="col-lg-3 col-sm-6 centrado">
+
+            <a class="btn btn-perfil" href="{{ url_for('crear_perfil') }}"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a>
+
+        </div>
+
+        <!--Boton por perfil-->
+        <div>
+
+
+        </div>
+
+
+    </div>
+</div>
+
 {% endblock %}
