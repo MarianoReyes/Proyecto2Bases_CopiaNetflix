@@ -9,10 +9,10 @@ from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__)
 app.secret_key = 'cairocoders-ednalan'
 
-DB_HOST = "database-2.cruxh0msewub.us-east-2.rds.amazonaws.com"
+DB_HOST = "database-3.cruxh0msewub.us-east-2.rds.amazonaws.com"
 DB_NAME = "postgres"
 DB_USER = "postgres"
-DB_PASS = "imzIODbX7KDDxlJxzTMw"
+DB_PASS = "proyecto2bases"
 
 conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER,
                         password=DB_PASS, host=DB_HOST)
