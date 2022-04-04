@@ -24,6 +24,10 @@
             <td>{{ account['tipocuenta'] }}</td>
         </tr>
     </table>
-    <a href="{{ url_for('cambiocuenta') }}">Actualizar Cuenta</a>
+    <br>
+    <a href="{{ url_for('cambiocuenta') }}">Actualizar Tipo de Cuenta</a>
+    <br>
+    <p>Al actualizar el tipo de cuenta si se baja de categoría el resto de perfiles de inhabilitan pero siguen existiendo </p>
+    
 </div>
 {% endblock %}
