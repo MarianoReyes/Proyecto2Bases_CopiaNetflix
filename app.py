@@ -70,6 +70,7 @@ def crear_perfil():
         cursor.execute("INSERT INTO perfiles (nombre_perfil, email, fecha_ingreso, hora_ingreso) VALUES (%s,%s,%s,%s)",
                        (nombre_perfil, email, fecha_ingreso, hora_ingreso))
         conn.commit()
+        flash('Perfil creado con exito')
 
     return render_template('crear_perfil.html', username=session['username'])
 
@@ -157,16 +158,6 @@ def register():
     return render_template('register.html')
 
 
-@app.route('/logout')
-def logout():
-    # Remove session data, this will log the user out
-    session.pop('loggedin', None)
-    session.pop('id', None)
-    session.pop('username', None)
-    # Redirect to login page
-    return redirect(url_for('login'))
-
-
 @app.route('/profile')
 def profile():
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
@@ -179,6 +170,26 @@ def profile():
         return render_template('profile.html', account=account)
     # User is not loggedin redirect to login page
     return redirect(url_for('login'))
+
+
+@app.route('/cambiocuenta', methods=['GET', 'POST'])
+def cambiocuenta():
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    cursor.execute('SELECT * FROM cuentas WHERE id = %s', [session['id']])
+    account = cursor.fetchone()
+
+    if 'tipocuenta' in request.form:
+        # Check tipo de cuenta
+        tipocuenta = request.form['tipocuenta']
+
+        cursor.execute('UPDATE cuentas SET tipocuenta = %s WHERE username  = %s',
+                       (tipocuenta, session['username']))
+        conn.commit()
+        flash('Tipo de Cuenta Actualizada')
+
+    # rediregir a cambio cuenta
+    return render_template('cambiocuenta.html', account=account)
 
 
 @app.route('/homep/<name>')
@@ -197,6 +208,16 @@ def homep(name):
 
     # Mandar a pagina de inicio del perfil
     return render_template('homep.html', account=account, perfil=perfil)
+
+
+@app.route('/logout')
+def logout():
+    # Remove session data, this will log the user out
+    session.pop('loggedin', None)
+    session.pop('id', None)
+    session.pop('username', None)
+    # Redirect to login page
+    return redirect(url_for('login'))
 
 
 if __name__ == "__main__":

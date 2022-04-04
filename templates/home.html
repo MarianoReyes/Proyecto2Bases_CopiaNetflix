@@ -11,7 +11,7 @@
 <div class=" container">
     <div class=" row">
         
-        <div class="col-lg-3 col-sm-6 centrado">
+        <div class="col-lg-3 col-sm-6 centrado my-2">
 
             <a class="btn btn-perfil" href="{{ url_for('crear_perfil') }}"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a>
 
@@ -20,9 +20,8 @@
         <!--Boton por perfil-->
         {% if account['tipocuenta'] == 'Gratis' %}
         {% for perfil in perfiles[:1] %}
-        
-        <div id="perfil" style="display:none">{{ perfil['nombre_perfil'] }}</div>
-        <div class="col-lg-3 col-sm-6 centrado">
+
+        <div class="col-lg-3 col-sm-6 centrado my-2">
             
             
             <a class="btn btn-perfil" href="{{ url_for('homep', name=perfil['nombre_perfil']) }}">
@@ -36,8 +35,7 @@
         {% if account['tipocuenta'] == 'Standard' %}
         {% for perfil in perfiles[:4] %}
         
-        <div id="perfil" style="display:none">{{ perfil['nombre_perfil'] }}</div>
-        <div class="col-lg-3 col-sm-6 centrado">
+        <div class="col-lg-3 col-sm-6 centrado my-2">
             
             
             <a class="btn btn-perfil" href="{{ url_for('homep', name=perfil['nombre_perfil']) }}">
@@ -50,9 +48,8 @@
 
         {% if account['tipocuenta'] == 'Premium' %}
         {% for perfil in perfiles[:8] %}
-        
-        <div id="perfil" style="display:none">{{ perfil['nombre_perfil'] }}</div>
-        <div class="col-lg-3 col-sm-6 centrado">
+
+        <div class="col-lg-3 col-sm-6 centrado my-2" >
             
             
             <a class="btn btn-perfil" href="{{ url_for('homep', name=perfil['nombre_perfil']) }}">

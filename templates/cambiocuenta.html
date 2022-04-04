@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset="utf-8">
+  <title>Cambio de Tipo de Cuenta</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
+  <!-- Google Fonts -->
+  <link href='https://fonts.googleapis.com/css?family=Passion+One' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Oxygen' rel='stylesheet' type='text/css'>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+ </head>
+ <body style="background-color:#8ea1b8;">
+ <div class="container">
+   <div class="row main">
+    <div class="main-login main-center">
+
+     <form action="{{ url_for('cambiocuenta') }}" method="post" autocomplete="off"> 
+    
+        <div class="form-group">
+            <label for="tipocuenta" class="cols-sm-2 control-label">Tipo de Cuenta</label>
+            <div class="cols-sm-10">
+             <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-list fa-lg" aria-hidden="true"></i></span>
+              <select id="tipocuenta" name="tipocuenta" class="select" style="width:79%">
+                <option class="form-control select" selected hidden value="{{account['tipocuenta']}}"></option>
+                <option class="form-control select" value="Gratis">Gratis (1 perfil)</option>
+                <option class="form-control select" value="Standard">Standard (4 perfiles)</option>
+                <option class="form-control select" value="Premium">Premium (8 perfiles)</option>
+              </select>
+             </div>
+            </div>
+        </div>
+        <div class="form-group ">
+            {% with messages = get_flashed_messages()  %}
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+            <input type="submit" value="Actualizar" class="form-control  btn btn-success " name="">
+        </div>
+
+     </form>
+     <br>
+     <a class=" btn btn-success" href="{{ url_for('profile') }}">Regresar</a>
+
+    </div>
+  </div>
+</div>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>  
+</body>
+</html>
