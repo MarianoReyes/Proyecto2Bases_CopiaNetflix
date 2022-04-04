@@ -18,7 +18,7 @@
         </div>
 
         <!--Boton por perfil-->
-        {% if account['tipocuenta'] == 'gratis' %}
+        {% if account['tipocuenta'] == 'Gratis' %}
         {% for perfil in perfiles[:1] %}
         
         <div id="perfil" style="display:none">{{ perfil['nombre_perfil'] }}</div>
@@ -33,7 +33,7 @@
         {% endfor %}
         {% endif %}
 
-        {% if account['tipocuenta'] == 'standard' %}
+        {% if account['tipocuenta'] == 'Standard' %}
         {% for perfil in perfiles[:4] %}
         
         <div id="perfil" style="display:none">{{ perfil['nombre_perfil'] }}</div>
@@ -48,7 +48,7 @@
         {% endfor %}
         {% endif %}
 
-        {% if account['tipocuenta'] == 'premium' %}
+        {% if account['tipocuenta'] == 'Premium' %}
         {% for perfil in perfiles[:8] %}
         
         <div id="perfil" style="display:none">{{ perfil['nombre_perfil'] }}</div>
