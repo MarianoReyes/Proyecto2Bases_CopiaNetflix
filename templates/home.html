@@ -18,16 +18,17 @@
         </div>
 
         <!--Boton por perfil-->
-        <var>email = account['email']</var>
+        
+        {% for perfil in perfiles %}
         <div class="col-lg-3 col-sm-6 centrado">
             
-            {% for email in account %}
+            
             <a class="btn btn-perfil" href="{{ url_for('homep') }}">
-                <td>{{ account['nombre_perfil'] }}</td>
+                {{ perfil['nombre_perfil'] }}
             </a>
-            {% endfor %}
+            
         </div>
-
+        {% endfor %}
 
     </div>
 </div>
