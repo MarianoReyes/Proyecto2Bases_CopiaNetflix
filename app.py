@@ -27,12 +27,9 @@ def home():
         cursor.execute('SELECT * FROM cuentas WHERE id = %s', [session['id']])
         account = cursor.fetchone()
 
-        print(account)
-
         cursor.execute('SELECT * FROM perfiles WHERE email = %s',
                        [account['email']])
         perfiles = cursor.fetchall()
-        print(perfiles)
 
         # User is loggedin show them the home page
         return render_template('home.html', username=session['username'], account=account, perfiles=perfiles)
@@ -85,7 +82,6 @@ def login():
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
         username = request.form['username']
         password = request.form['password']
-        print(password)
 
         # Check if account exists using MySQL
         cursor.execute(
@@ -95,7 +91,6 @@ def login():
 
         if account:
             password_rs = account['password']
-            print(password_rs)
             # If account exists in cuentas table in out database
             if check_password_hash(password_rs, password):
                 # Create session data, we can access this data in other routes
@@ -186,13 +181,22 @@ def profile():
     return redirect(url_for('login'))
 
 
-@app.route('/homep')
-def homep():
+@app.route('/homep/<name>')
+def homep(name):
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    cursor.execute('SELECT * FROM perfiles WHERE id = %s', [session['id']])
+
+    cursor.execute('SELECT * FROM cuentas WHERE id = %s', [session['id']])
     account = cursor.fetchone()
+
+    print(name)
+
+    cursor.execute(
+        'SELECT * FROM perfiles WHERE nombre_perfil = (%s)', (name,))
+    perfil = cursor.fetchone()
+    print(perfil)
+
     # Mandar a pagina de inicio del perfil
-    return render_template('homep.html', account=account)
+    return render_template('homep.html', account=account, perfil=perfil)
 
 
 if __name__ == "__main__":

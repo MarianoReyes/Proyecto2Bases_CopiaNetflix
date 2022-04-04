@@ -20,15 +20,18 @@
         <!--Boton por perfil-->
         
         {% for perfil in perfiles %}
+        
+        <div id="perfil" style="display:none">{{ perfil['nombre_perfil'] }}</div>
         <div class="col-lg-3 col-sm-6 centrado">
             
             
-            <a class="btn btn-perfil" href="{{ url_for('homep') }}">
+            <a class="btn btn-perfil" href="{{ url_for('homep', name=perfil['nombre_perfil']) }}">
                 {{ perfil['nombre_perfil'] }}
             </a>
             
         </div>
         {% endfor %}
+
 
     </div>
 </div>
