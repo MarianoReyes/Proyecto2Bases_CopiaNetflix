@@ -5,6 +5,7 @@
 {% block content %}
 <h1 class="h2">Dashboard de Cuenta</h1>
 <p>Welcome back, {{ username }}!</p>
+<p>{{ account['email'] }}</p>
 
 
 <div class=" container">
@@ -17,9 +18,14 @@
         </div>
 
         <!--Boton por perfil-->
-        <div>
-
-
+        <var>email = account['email']</var>
+        <div class="col-lg-3 col-sm-6 centrado">
+            
+            {% for email in account %}
+            <a class="btn btn-perfil" href="{{ url_for('homep') }}">
+                <td>{{ account['nombre_perfil'] }}</td>
+            </a>
+            {% endfor %}
         </div>
 
 

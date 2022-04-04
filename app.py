@@ -22,9 +22,13 @@ conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER,
 def home():
     # Check if user is loggedin
     if 'loggedin' in session:
+        cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        
+        cursor.execute('SELECT * FROM perfiles WHERE id = %s', [session['id']])
+        account = cursor.fetchone()
 
         # User is loggedin show them the home page
-        return render_template('home.html', username=session['username'])
+        return render_template('home.html', username=session['username'],account=account)
 
     # User is not loggedin redirect to login page
     return redirect(url_for('login'))
@@ -173,6 +177,14 @@ def profile():
         return render_template('profile.html', account=account)
     # User is not loggedin redirect to login page
     return redirect(url_for('login'))
+
+@app.route('/homep')
+def homep():
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cursor.execute('SELECT * FROM perfiles WHERE id = %s', [session['id']])
+    account = cursor.fetchone()
+     # Mandar a pagina de inicio del perfil
+    return render_template('homep.html', account=account)
 
 
 if __name__ == "__main__":
