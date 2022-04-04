@@ -1,23 +1,27 @@
 {% extends 'layout.html' %}
   
-{% block title %}Profile{% endblock %}
+{% block title %}Cuenta{% endblock %}
   
 {% block content %}
-<h1>Profile Page</h1>
+<h1>Página de Perfil</h1>
 <div>
-    <p>Your account details are below:</p>
+    <p>Los detalles de la cuenta se encuentran abajo:</p>
     <table>
         <tr>
-            <td>Name:</td>
+            <td>Nombre:</td>
             <td>{{ account['fullname'] }}</td>
         </tr>
-  <tr>
-            <td>Username:</td>
+        <tr>
+            <td>Usuario:</td>
             <td>{{ account['username'] }}</td>
         </tr>
         <tr>
-            <td>Email:</td>
+            <td>Correo:</td>
             <td>{{ account['email'] }}</td>
+        </tr>
+        <tr>
+            <td>Tipo de Cuenta:</td>
+            <td>{{ account['tipocuenta'] }}</td>
         </tr>
     </table>
 </div>
