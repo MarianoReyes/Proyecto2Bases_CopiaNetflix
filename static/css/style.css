@@ -19,6 +19,10 @@ body {
   color: #fff;
 }
 
+.btn-p2{
+  background: #390C9D!important;
+}
+
 .btn-perfil:hover{
   color: #fff;
 }
