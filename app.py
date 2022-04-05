@@ -59,18 +59,29 @@ def crear_perfil():
     cursor.execute('SELECT * FROM cuentas WHERE id = %s', [session['id']])
     account = cursor.fetchone()
 
-    # Check if "username", "password" and "email" POST requests exist (user submitted form)
-    if request.method == 'POST' and 'nombreperfil' in request.form:
-        nombre_perfil = request.form['nombreperfil']
-        email = account['email']
-        fecha_ingreso = '2022-03-31'
-        hora_ingreso = '05:49'
+    print(account['tipocuenta'])
 
-        # Account doesnt exists and the form data is valid, now insert new account into cuentas table
-        cursor.execute("INSERT INTO perfiles (nombre_perfil, email, fecha_ingreso, hora_ingreso) VALUES (%s,%s,%s,%s)",
-                       (nombre_perfil, email, fecha_ingreso, hora_ingreso))
-        conn.commit()
-        flash('Perfil creado con exito')
+    # Check if "username", "password" and "email" POST requests exist (user submitted form)
+    if account['tipocuenta'] == 'Premium':
+        cursor.execute(
+            'SELECT COUNT(*) FROM perfiles WHERE email = %s', [account['email']])
+        contador = cursor.fetchone()
+        print('ResultCount = ', contador[0])
+        if contador[0] < 8:
+            if request.method == 'POST' and 'nombreperfil' in request.form:
+                nombre_perfil = request.form['nombreperfil']
+                email = account['email']
+                fecha_ingreso = '2022-03-31'
+                hora_ingreso = '05:49'
+
+                # Account doesnt exists and the form data is valid, now insert new account into cuentas table
+                cursor.execute("INSERT INTO perfiles (nombre_perfil, email, fecha_ingreso, hora_ingreso) VALUES (%s,%s,%s,%s)",
+                               (nombre_perfil, email, fecha_ingreso, hora_ingreso))
+                conn.commit()
+                flash('Perfil creado con exito')
+        else:
+            if request.method == 'POST' and 'nombreperfil' in request.form:
+                flash('Ya no se pueden crear mas perfiles')
 
     return render_template('crear_perfil.html', username=session['username'])
 
