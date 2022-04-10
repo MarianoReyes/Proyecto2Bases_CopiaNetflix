@@ -297,6 +297,12 @@ def mylist(name):
     return render_template('mylist.html', account=account, perfil=perfil, vistos=vistos)
 
 
+@app.route('/agregar_pos')
+def agregar_pos():
+    # Mandar a pagina para agregar series o peliculas
+    return render_template('agregar_pos.html')
+
+
 @app.route('/logout')
 def logout():
     # Remove session data, this will log the user out
