@@ -31,6 +31,9 @@ def home():
                        [account['email']])
         perfiles = cursor.fetchall()
 
+        if account['admin'] == 1:
+            return redirect(url_for('home_admin'))
+
         # User is loggedin show them the home page
         return render_template('home.html', username=session['username'], account=account, perfiles=perfiles)
 
@@ -43,8 +46,13 @@ def home_admin():
     # Check if user is loggedin
     if 'loggedin' in session:
 
+        cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+        cursor.execute('SELECT * FROM cuentas WHERE id = %s', [session['id']])
+        account = cursor.fetchone()
+
         # User is loggedin show them the home page
-        return render_template('home_admin.html', username=session['username'])
+        return render_template('home_admin.html', username=session['username'], account=account)
 
     # User is not loggedin redirect to login page
     return redirect(url_for('login'))
@@ -64,7 +72,7 @@ def crear_perfil():
         cursor.execute(
             'SELECT COUNT(*) FROM perfiles WHERE email = %s', [account['email']])
         contador = cursor.fetchone()
-        
+
         if contador[0] < 8:
             if request.method == 'POST' and 'nombreperfil' in request.form:
                 nombre_perfil = request.form['nombreperfil']
@@ -84,7 +92,7 @@ def crear_perfil():
         cursor.execute(
             'SELECT COUNT(*) FROM perfiles WHERE email = %s', [account['email']])
         contador = cursor.fetchone()
-        
+
         if contador[0] < 4:
             if request.method == 'POST' and 'nombreperfil' in request.form:
                 nombre_perfil = request.form['nombreperfil']
@@ -120,7 +128,6 @@ def crear_perfil():
         else:
             if request.method == 'POST' and 'nombreperfil' in request.form:
                 flash('Ya no se pueden crear mas perfiles')
-
 
     return render_template('crear_perfil.html', username=session['username'])
 
@@ -241,7 +248,9 @@ def cambiocuenta():
     # rediregir a cambio cuenta
     return render_template('cambiocuenta.html', account=account)
 
-#Pagina de home de perfiles
+# Pagina de home de perfiles
+
+
 @app.route('/homep/<name>')
 def homep(name):
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
@@ -256,12 +265,14 @@ def homep(name):
     perfil = cursor.fetchone()
     print(perfil)
 
-    #Mando a llamar Peliculas y series
-    cursor.execute('select distinct serie_pelicula,imagen,link_repro from serie_peliculas')
+    # Mando a llamar Peliculas y series
+    cursor.execute(
+        'select distinct serie_pelicula,imagen,link_repro from serie_peliculas')
     series_peliculas = cursor.fetchall()
 
     # Mandar a pagina de inicio del perfil
-    return render_template('homep.html', account=account, perfil=perfil,series_peliculas=series_peliculas)
+    return render_template('homep.html', account=account, perfil=perfil, series_peliculas=series_peliculas)
+
 
 @app.route('/mylist/<name>')
 def mylist(name):
@@ -277,13 +288,13 @@ def mylist(name):
     perfil = cursor.fetchone()
     print(perfil)
 
-    #Mando a llamar Peliculas y series
-    cursor.execute('select distinct serie_pelicula from contenido inner join serie_peliculas ON serie_pelicula = serie_pelicula')
+    # Mando a llamar Peliculas y series
+    cursor.execute(
+        'select distinct serie_pelicula from contenido inner join serie_peliculas ON serie_pelicula = serie_pelicula')
     vistos = cursor.fetchall()
 
     # Mandar a pagina de inicio del perfil
-    return render_template('mylist.html', account=account, perfil=perfil,vistos=vistos)
-
+    return render_template('mylist.html', account=account, perfil=perfil, vistos=vistos)
 
 
 @app.route('/logout')

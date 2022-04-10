@@ -4,7 +4,48 @@
   
 {% block content %}
 
-<h1 class="h2">Pantalla de Admin</h1>
-<p>Welcome back, {{ username }}!</p>
+<h1 class="h2">Bienvenido Admin {{ username }}!</h1>
+<hr>
+<div class=" container">
+    <div class="row" style="justify-content: space-evenly;">
+        <div class=" row" style="flex-direction: column;">
+            <h4>Acciones para contenido</h4>
+            
+    
+            <a class="btn btn-perfil btn-p2" href="">Agregar Película/Serie</a>
+
+
+            <a class="btn btn-perfil btn-p2" href="">Modificar Película/Serie</a>
+
+
+            <a class="btn btn-perfil btn-p2" href="">Borrar Película/Serie</a>
+
+    
+        </div>
+    
+        <div class=" row" style="flex-direction: column;">
+    
+            <h4>Acciones para usuarios</h4>
+
+            <a class="btn btn-perfil btn-p2" href="">Modificar Usuario</a>
+
+
+            <a class="btn btn-perfil btn-p2" href="">Desactivar Usuario</a>
+
+    
+        </div>
+        <div class=" row" style="flex-direction: column;">
+    
+            <h4>Acciones para Anunciante</h4>
+
+            <a class="btn btn-perfil btn-p2" href="">Agregar Anunciante</a>
+
+            <a class="btn btn-perfil btn-p2" href="">Modificar Anuncios</a>
+
+            <a class="btn btn-perfil btn-p2" href="">Borrar Anunciante</a>
+
+        </div>
+    </div>
+</div>
 
 {% endblock %}

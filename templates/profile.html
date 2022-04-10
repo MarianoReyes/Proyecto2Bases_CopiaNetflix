@@ -19,15 +19,24 @@
             <td>Correo:</td>
             <td>{{ account['email'] }}</td>
         </tr>
+        {% if account['admin'] == 0 %}
         <tr>
             <td>Tipo de Cuenta:</td>
             <td>{{ account['tipocuenta'] }}</td>
         </tr>
+        {% endif %}
+        {% if account['admin'] == 1 %}
+        <tr>
+            <td>Tipo de Cuenta:</td>
+            <td>Admin</td>
+        </tr>
+        {% endif %}
     </table>
     <br>
+    {% if account['admin'] == 0 %}
     <a href="{{ url_for('cambiocuenta') }}">Actualizar Tipo de Cuenta</a>
     <br>
     <p>Al actualizar el tipo de cuenta si se baja de categoría el resto de perfiles de inhabilitan pero siguen existiendo </p>
-    
+    {% endif %}
 </div>
 {% endblock %}
