@@ -10,9 +10,9 @@
 
 <header>
     <nav class="main-nav">
-        <a href="#back">Back</a>
-        <a href="#favoritos">My List</a>
-        <a href="#watched">Watched</a>
+        <a href="{{ url_for('home') }}">Back</a>
+        <a  href="{{ url_for('mylist', name=perfil['nombre_perfil']) }}">My List</a>
+        <a href=#>Watched</a>
         <a href="#"><i class="fas fa-search sub-nav-logo"></i></a> 
     </nav>   
 </header>
