@@ -1,9 +1,25 @@
+<!--Pagina de los perfiles -->
+
 {% extends 'layout.html' %}
   
-{% block title %}Home{% endblock %}
+{% block title %} Perfil {% endblock %}
   
 {% block content %}
-<h1 class="h2">Dashboard de Cuenta</h1>
-<p>Welcome back, {{ perfil['nombre_perfil']}}!</p>
+<h1 class="h2">My Buuble</h1>
+<p>Welcome Back, {{ perfil['nombre_perfil']}}!</p>
+
+<header>
+    <nav class="main-nav">
+        <a href="#back">Back</a>
+        <a href="#favoritos">My List</a>
+        <a href="#watched">Watched</a>
+        <a href="#"><i class="fas fa-search sub-nav-logo"></i></a> 
+    </nav>   
+</header>
+
+{% for serie_pelicula in series_peliculas %}
+<a href="{{serie_pelicula['link_repro'] }}"><img src="{{serie_pelicula['imagen'] }}" alt=""></a> 
+
+{% endfor %}
 
 {% endblock %}

@@ -241,7 +241,7 @@ def cambiocuenta():
     # rediregir a cambio cuenta
     return render_template('cambiocuenta.html', account=account)
 
-
+#Pagina de home de perfiles
 @app.route('/homep/<name>')
 def homep(name):
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
@@ -256,8 +256,13 @@ def homep(name):
     perfil = cursor.fetchone()
     print(perfil)
 
+    #Mando a llamar Peliculas y series
+    cursor.execute('select distinct serie_pelicula,imagen,link_repro from serie_peliculas')
+    series_peliculas = cursor.fetchall()
+
     # Mandar a pagina de inicio del perfil
-    return render_template('homep.html', account=account, perfil=perfil)
+    return render_template('homep.html', account=account, perfil=perfil,series_peliculas=series_peliculas)
+
 
 
 @app.route('/logout')
