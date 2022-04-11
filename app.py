@@ -323,12 +323,14 @@ def borrar_pos():
         nombrepos = request.form['nombrepos']
         # se comprueba si existe la serie/pelicula
         cursor.execute(
-            'SELECT * FROM serie_peliculas WHERE serie_peliculas = %s', (nombrepos,))
+            'SELECT * FROM serie_peliculas WHERE serie_pelicula = %s', (nombrepos,))
         seriepelicula = cursor.fetchone()
 
         if seriepelicula:
             cursor.execute(
-                "DELETE FROM serie_peliculas WHERE serie_peliculas = %s", (nombrepos,))
+                "DELETE FROM serie_peliculas WHERE serie_pelicula = %s", (nombrepos,))
+            cursor.execute(
+                "DELETE FROM actores WHERE serie_pelicula = %s", (nombrepos,))
             conn.commit()
             flash('Serie / Película borrada con exito')
         else:
