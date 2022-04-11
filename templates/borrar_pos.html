@@ -14,47 +14,50 @@
  <div class="container">
     <div class="row main">
         <div class="main-login main-center">
-        <h5>Borrar serie o pelicula</h5>
+            <h5>Borrar serie o pelicula</h5>
             <form action="{{ url_for('borrar_pos') }}" method="post" autocomplete="off"> 
 
-            <div class="form-group">
-            <label for="name" class="cols-sm-2 control-label">Nombre de la Serie o de la Pelicula Exacto</label>
-            <div class="cols-sm-10">
-                <div class="input-group">
-                <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
-                <input type="text" class="form-control" name="nombrepos" id="nombrepos"  placeholder="Ingresa el nombre de la serie o película"/>
-                </div>
-            </div>
-            </div>
+                <div class="form-group">
+                    <label for="name" class="cols-sm-2 control-label">Nombre de la Serie o de la Pelicula Exacto</label>
+                    <div class="cols-sm-10">
+                        <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
+                        <input type="text" class="form-control" name="nombrepos" id="nombrepos"  placeholder="Ingresa el nombre de la serie o película"/>
+                        </div>
+                    </div>
+                    </div>
 
-            <div class="form-group ">
-                {% with messages = get_flashed_messages()  %}
-                {% if messages %}
-                {% for message in messages %}
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
+                    <div class="form-group ">
+                        {% with messages = get_flashed_messages()  %}
+                        {% if messages %}
+                        {% for message in messages %}
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                        {% endwith %}
+                    <input type="submit" value="Borrar" class="form-control btn btn-success "  name="">
+                    <br>
+                    <br>
+                    <a href="{{ url_for('home_admin') }}" class="btn btn-success ">Regresar al dashboard</a>
+                    
                 </div>
-                {% endfor %}
-                {% endif %}
-                {% endwith %}
-            <input type="submit" value="Borrar" class="form-control btn btn-success "  name="">
-            <br>
-            <br>
-            <a href="{{ url_for('home_admin') }}" class="btn btn-success ">Regresar al dashboard</a>
-                
-            </div>
                 
             </form>
         </div>
     </div>
-    <div class="row">
-        {% for serie_pelicula in series_peliculas %}
-        <p>{{serie_pelicula['serie_pelicula'] }}"</p> 
-
-        {% endfor %}
+    <div class="row" style="margin-top: 10px;">
+        <div class="main-login main-center">
+            <h5>Listado de Series y Películas</h5>
+            {% for serie_pelicula in series_peliculas %}
+            <p>- {{serie_pelicula['serie_pelicula'] }}</p> 
+            {% endfor %}    
+        </div>
+        
     </div>
   </div>
  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
