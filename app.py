@@ -58,80 +58,6 @@ def home_admin():
     return redirect(url_for('login'))
 
 
-@app.route('/crear_perfil', methods=['GET', 'POST'])
-# manda a pestaña para crear perfil
-def crear_perfil():
-
-    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-
-    cursor.execute('SELECT * FROM cuentas WHERE id = %s', [session['id']])
-    account = cursor.fetchone()
-
-    # Check if "username", "password" and "email" POST requests exist (user submitted form)
-    if account['tipocuenta'] == 'Premium':
-        cursor.execute(
-            'SELECT COUNT(*) FROM perfiles WHERE email = %s', [account['email']])
-        contador = cursor.fetchone()
-
-        if contador[0] < 8:
-            if request.method == 'POST' and 'nombreperfil' in request.form:
-                nombre_perfil = request.form['nombreperfil']
-                email = account['email']
-                fecha_ingreso = '2022-03-31'
-                hora_ingreso = '05:49'
-
-                # Account doesnt exists and the form data is valid, now insert new account into cuentas table
-                cursor.execute("INSERT INTO perfiles (nombre_perfil, email, fecha_ingreso, hora_ingreso) VALUES (%s,%s,%s,%s)",
-                               (nombre_perfil, email, fecha_ingreso, hora_ingreso))
-                conn.commit()
-                flash('Perfil creado con exito')
-        else:
-            if request.method == 'POST' and 'nombreperfil' in request.form:
-                flash('Ya no se pueden crear mas perfiles')
-    elif account['tipocuenta'] == 'Standard':
-        cursor.execute(
-            'SELECT COUNT(*) FROM perfiles WHERE email = %s', [account['email']])
-        contador = cursor.fetchone()
-
-        if contador[0] < 4:
-            if request.method == 'POST' and 'nombreperfil' in request.form:
-                nombre_perfil = request.form['nombreperfil']
-                email = account['email']
-                fecha_ingreso = '2022-03-31'
-                hora_ingreso = '05:49'
-
-                # Account doesnt exists and the form data is valid, now insert new account into cuentas table
-                cursor.execute("INSERT INTO perfiles (nombre_perfil, email, fecha_ingreso, hora_ingreso) VALUES (%s,%s,%s,%s)",
-                               (nombre_perfil, email, fecha_ingreso, hora_ingreso))
-                conn.commit()
-                flash('Perfil creado con exito')
-        else:
-            if request.method == 'POST' and 'nombreperfil' in request.form:
-                flash('Ya no se pueden crear mas perfiles')
-    else:
-        cursor.execute(
-            'SELECT COUNT(*) FROM perfiles WHERE email = %s', [account['email']])
-        contador = cursor.fetchone()
-        print('ResultCount = ', contador[0])
-        if contador[0] < 1:
-            if request.method == 'POST' and 'nombreperfil' in request.form:
-                nombre_perfil = request.form['nombreperfil']
-                email = account['email']
-                fecha_ingreso = '2022-03-31'
-                hora_ingreso = '05:49'
-
-                # Account doesnt exists and the form data is valid, now insert new account into cuentas table
-                cursor.execute("INSERT INTO perfiles (nombre_perfil, email, fecha_ingreso, hora_ingreso) VALUES (%s,%s,%s,%s)",
-                               (nombre_perfil, email, fecha_ingreso, hora_ingreso))
-                conn.commit()
-                flash('Perfil creado con exito')
-        else:
-            if request.method == 'POST' and 'nombreperfil' in request.form:
-                flash('Ya no se pueden crear mas perfiles')
-
-    return render_template('crear_perfil.html', username=session['username'])
-
-
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
@@ -229,6 +155,80 @@ def profile():
     return redirect(url_for('login'))
 
 
+@app.route('/crear_perfil', methods=['GET', 'POST'])
+# manda a pestaña para crear perfil
+def crear_perfil():
+
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    cursor.execute('SELECT * FROM cuentas WHERE id = %s', [session['id']])
+    account = cursor.fetchone()
+
+    # Check if "username", "password" and "email" POST requests exist (user submitted form)
+    if account['tipocuenta'] == 'Premium':
+        cursor.execute(
+            'SELECT COUNT(*) FROM perfiles WHERE email = %s', [account['email']])
+        contador = cursor.fetchone()
+
+        if contador[0] < 8:
+            if request.method == 'POST' and 'nombreperfil' in request.form:
+                nombre_perfil = request.form['nombreperfil']
+                email = account['email']
+                fecha_ingreso = '2022-03-31'
+                hora_ingreso = '05:49'
+
+                # Account doesnt exists and the form data is valid, now insert new account into cuentas table
+                cursor.execute("INSERT INTO perfiles (nombre_perfil, email, fecha_ingreso, hora_ingreso) VALUES (%s,%s,%s,%s)",
+                               (nombre_perfil, email, fecha_ingreso, hora_ingreso))
+                conn.commit()
+                flash('Perfil creado con exito')
+        else:
+            if request.method == 'POST' and 'nombreperfil' in request.form:
+                flash('Ya no se pueden crear mas perfiles')
+    elif account['tipocuenta'] == 'Standard':
+        cursor.execute(
+            'SELECT COUNT(*) FROM perfiles WHERE email = %s', [account['email']])
+        contador = cursor.fetchone()
+
+        if contador[0] < 4:
+            if request.method == 'POST' and 'nombreperfil' in request.form:
+                nombre_perfil = request.form['nombreperfil']
+                email = account['email']
+                fecha_ingreso = '2022-03-31'
+                hora_ingreso = '05:49'
+
+                # Account doesnt exists and the form data is valid, now insert new account into cuentas table
+                cursor.execute("INSERT INTO perfiles (nombre_perfil, email, fecha_ingreso, hora_ingreso) VALUES (%s,%s,%s,%s)",
+                               (nombre_perfil, email, fecha_ingreso, hora_ingreso))
+                conn.commit()
+                flash('Perfil creado con exito')
+        else:
+            if request.method == 'POST' and 'nombreperfil' in request.form:
+                flash('Ya no se pueden crear mas perfiles')
+    else:
+        cursor.execute(
+            'SELECT COUNT(*) FROM perfiles WHERE email = %s', [account['email']])
+        contador = cursor.fetchone()
+        print('ResultCount = ', contador[0])
+        if contador[0] < 1:
+            if request.method == 'POST' and 'nombreperfil' in request.form:
+                nombre_perfil = request.form['nombreperfil']
+                email = account['email']
+                fecha_ingreso = '2022-03-31'
+                hora_ingreso = '05:49'
+
+                # Account doesnt exists and the form data is valid, now insert new account into cuentas table
+                cursor.execute("INSERT INTO perfiles (nombre_perfil, email, fecha_ingreso, hora_ingreso) VALUES (%s,%s,%s,%s)",
+                               (nombre_perfil, email, fecha_ingreso, hora_ingreso))
+                conn.commit()
+                flash('Perfil creado con exito')
+        else:
+            if request.method == 'POST' and 'nombreperfil' in request.form:
+                flash('Ya no se pueden crear mas perfiles')
+
+    return render_template('crear_perfil.html', username=session['username'])
+
+
 @app.route('/cambiocuenta', methods=['GET', 'POST'])
 def cambiocuenta():
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
@@ -301,6 +301,41 @@ def mylist(name):
 def agregar_pos():
     # Mandar a pagina para agregar series o peliculas
     return render_template('agregar_pos.html')
+
+
+@app.route('/modificar_pos')
+def modificar_pos():
+    # Mandar a pagina para agregar series o peliculas
+    return render_template('modificar_pos.html')
+
+
+@app.route('/borrar_pos', methods=['GET', 'POST'])
+def borrar_pos():
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    # Mando a llamar Peliculas y series
+    cursor.execute(
+        'select distinct serie_pelicula,imagen,link_repro from serie_peliculas')
+    series_peliculas = cursor.fetchall()
+
+    if request.method == 'POST' and 'nombrepos' in request.form:
+
+        nombrepos = request.form['nombrepos']
+        # se comprueba si existe la serie/pelicula
+        cursor.execute(
+            'SELECT * FROM serie_peliculas WHERE serie_peliculas = %s', (nombrepos,))
+        seriepelicula = cursor.fetchone()
+
+        if seriepelicula:
+            cursor.execute(
+                "DELETE FROM serie_peliculas WHERE serie_peliculas = %s", (nombrepos,))
+            conn.commit()
+            flash('Serie / Película borrada con exito')
+        else:
+            flash('Serie / Película no existente')
+
+    # Mandar a pagina para borrar series o peliculas
+    return render_template('borrar_pos.html', series_peliculas=series_peliculas)
 
 
 @app.route('/logout')
