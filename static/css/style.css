@@ -172,3 +172,9 @@ span.input-group-addon i {
 .main-nav a:hover {
   color: var(--dark);
 }
+
+.favoritos{
+  color:red;
+  font-size: 24px;
+  background: transparent;
+}
