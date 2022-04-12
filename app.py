@@ -361,6 +361,14 @@ def borrar_pos():
     # Mandar a pagina para borrar series o peliculas
     return render_template('borrar_pos.html', series_peliculas=series_peliculas)
 
+@app.route('/favoritos/<name>/<link>/<ima>')
+def favoritos(name,link,ima):
+    
+    print(name)
+    print(link)
+    print(ima)
+    # Mandar a pagina de inicio del perfil
+   
 
 @app.route('/logout')
 def logout():

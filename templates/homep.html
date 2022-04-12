@@ -23,7 +23,8 @@
 {% for serie_pelicula in series_peliculas %}
 <a href="{{serie_pelicula['link_repro'] }}"><img src="{{serie_pelicula['imagen'] }}" alt=""></a>
 
-<i class="fa fa-heart" style="font-size:48px;color:red"></i>
+<a href="{{ url_for('mylist', name=perfil['nombre_perfil']) }}"> <button  style="font-size:24px">Favorito <i class="fa fa-heart"></i></button></a>
+
 
 {% endfor %}
 
