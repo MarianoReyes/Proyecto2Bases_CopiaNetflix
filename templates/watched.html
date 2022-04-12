@@ -5,3 +5,14 @@
 {% block content %}
 <h1 class="h2">Watched</h1>
 <p>Welcome Back, {{ perfil['nombre_perfil']}}!</p>
+
+<header>
+    <nav class="main-nav">
+        <a href="{{ url_for('homep', name=perfil['nombre_perfil']) }}">Back</a>
+        <a  href="{{ url_for('mylist', name=perfil['nombre_perfil']) }}">My List</a>
+        <a  href="{{ url_for('watched', name=perfil['nombre_perfil']) }}">Watched</a>
+        <a href="#"><i class="fas fa-search sub-nav-logo"></i></a> 
+    </nav>   
+</header>
+
+{% endblock %}

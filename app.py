@@ -289,12 +289,34 @@ def mylist(name):
     print(perfil)
 
     # Mando a llamar Peliculas y series
-    cursor.execute(
-        'select distinct serie_pelicula from contenido inner join serie_peliculas ON serie_pelicula = serie_pelicula')
-    vistos = cursor.fetchall()
+    #cursor.execute(
+        #'select distinct serie_pelicula from contenido inner join serie_peliculas ON serie_pelicula = serie_pelicula')
+    #vistos = cursor.fetchall()
 
     # Mandar a pagina de inicio del perfil
-    return render_template('mylist.html', account=account, perfil=perfil, vistos=vistos)
+    return render_template('mylist.html', account=account, perfil=perfil) #, vistos=vistos
+
+@app.route('/watched/<name>')
+def watched(name):
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    cursor.execute('SELECT * FROM cuentas WHERE id = %s', [session['id']])
+    account = cursor.fetchone()
+
+    print(name)
+
+    cursor.execute(
+        'SELECT * FROM perfiles WHERE nombre_perfil = (%s)', (name,))
+    perfil = cursor.fetchone()
+    print(perfil)
+
+    # Mando a llamar Peliculas y series
+    #cursor.execute(
+        #'select distinct serie_pelicula from contenido inner join serie_peliculas ON serie_pelicula = serie_pelicula')
+    #vistos = cursor.fetchall()
+
+    # Mandar a pagina de inicio del perfil
+    return render_template('watched.html', account=account, perfil=perfil) #, vistos=vistos
 
 
 @app.route('/agregar_pos')
