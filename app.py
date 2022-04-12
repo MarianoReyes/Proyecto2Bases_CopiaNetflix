@@ -289,12 +289,14 @@ def mylist(name):
     print(perfil)
 
     # Mando a llamar Peliculas y series
-    #cursor.execute(
-        #'select distinct serie_pelicula from contenido inner join serie_peliculas ON serie_pelicula = serie_pelicula')
+    # cursor.execute(
+    # 'select distinct serie_pelicula from contenido inner join serie_peliculas ON serie_pelicula = serie_pelicula')
     #vistos = cursor.fetchall()
 
     # Mandar a pagina de inicio del perfil
-    return render_template('mylist.html', account=account, perfil=perfil) #, vistos=vistos
+    # , vistos=vistos
+    return render_template('mylist.html', account=account, perfil=perfil)
+
 
 @app.route('/watched/<name>')
 def watched(name):
@@ -311,18 +313,25 @@ def watched(name):
     print(perfil)
 
     # Mando a llamar Peliculas y series
-    #cursor.execute(
-        #'select distinct serie_pelicula from contenido inner join serie_peliculas ON serie_pelicula = serie_pelicula')
+    # cursor.execute(
+    # 'select distinct serie_pelicula from contenido inner join serie_peliculas ON serie_pelicula = serie_pelicula')
     #vistos = cursor.fetchall()
 
     # Mandar a pagina de inicio del perfil
-    return render_template('watched.html', account=account, perfil=perfil) #, vistos=vistos
+    # , vistos=vistos
+    return render_template('watched.html', account=account, perfil=perfil)
 
 
 @app.route('/agregar_pos')
 def agregar_pos():
     # Mandar a pagina para agregar series o peliculas
     return render_template('agregar_pos.html')
+
+
+@app.route('/agregar_actores')
+def agregar_actores():
+    # Mandar a pagina para agregar series o peliculas
+    return render_template('agregar_actores.html')
 
 
 @app.route('/modificar_pos')
@@ -361,14 +370,15 @@ def borrar_pos():
     # Mandar a pagina para borrar series o peliculas
     return render_template('borrar_pos.html', series_peliculas=series_peliculas)
 
+
 @app.route('/favoritos/<name>/<link>/<ima>')
-def favoritos(name,link,ima):
-    
+def favoritos(name, link, ima):
+
     print(name)
     print(link)
     print(ima)
     # Mandar a pagina de inicio del perfil
-   
+
 
 @app.route('/logout')
 def logout():
