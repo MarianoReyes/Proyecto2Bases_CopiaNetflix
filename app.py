@@ -357,16 +357,16 @@ def borrar_pos():
     # Mandar a pagina para borrar series o peliculas
     return render_template('borrar_pos.html', series_peliculas=series_peliculas)
 
-@app.route('/favoritos')
-def favoritos(sp,lp,ima,name,cuenta):
+@app.route('/favoritos/<sp>/<name>/<cuenta>/<ima>/<lp>')
+def favoritos(sp,name,cuenta,ima,lp):
     
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-
+    
     print(sp)
     print(name)
     print(cuenta)
-    print(lp)
     print(ima)
+    print(lp)
     # Mandar a pagina de inicio del perfil
 
     cursor.execute(
@@ -374,7 +374,7 @@ def favoritos(sp,lp,ima,name,cuenta):
     perfil = cursor.fetchone()
 
     cursor.execute(
-        'insert into favoritos (serie_pelicula,nombre_perfil,correo_cuenta,link_repro,imagen) values (%s,%s,%s,%s,%s)',(sp,name,cuenta,lp,ima,))
+        'insert into favoritos (serie_pelicula,nombre_perfil,correo_cuenta,imagen,link_repro) values (%s,%s,%s,%s)',(sp,name,cuenta,ima,lp,))
     conn.commit()
 
     cursor.execute(
