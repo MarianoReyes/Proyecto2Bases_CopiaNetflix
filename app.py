@@ -374,14 +374,14 @@ def favoritos(sp,lp,ima,name,cuenta):
     perfil = cursor.fetchone()
 
     cursor.execute(
-        'insert into favoritos (serie_pelicula,nombre_perfil,correo_cuenta,link_repro,imagen) values (%s,%s,%s,%s,%s)',(sp,name,cuenta,lp,ima))
+        'insert into favoritos (serie_pelicula,nombre_perfil,correo_cuenta,link_repro,imagen) values (%s,%s,%s,%s,%s)',(sp,name,cuenta,lp,ima,))
     conn.commit()
 
     cursor.execute(
         'select * from favoritos where nombre_perfil = (%s)', (name,))
     favoritos = cursor.fetchall() 
 
-    return render_template('mylist.html',favoritos = favoritos,perfil=perfil)
+    return render_template('mylist.html', favoritos=favoritos,perfil=perfil)
 
    
 
