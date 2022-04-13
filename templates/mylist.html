@@ -15,4 +15,10 @@
     </nav>   
 </header>
 
+{% for favoritos in favoritos %}
+
+<a href="{{ favoritos['link_repro'] }}"><img src="{{ favoritos['imagen'] }}" alt=""></a>
+
+{% endfor %}
+
 {% endblock %}

@@ -283,20 +283,14 @@ def mylist(name):
 
     print(name)
 
+
     cursor.execute(
         'SELECT * FROM perfiles WHERE nombre_perfil = (%s)', (name,))
     perfil = cursor.fetchone()
     print(perfil)
 
-    # Mando a llamar Peliculas y series
-    # cursor.execute(
-    # 'select distinct serie_pelicula from contenido inner join serie_peliculas ON serie_pelicula = serie_pelicula')
-    #vistos = cursor.fetchall()
-
     # Mandar a pagina de inicio del perfil
-    # , vistos=vistos
-    return render_template('mylist.html', account=account, perfil=perfil)
-
+    return render_template('mylist.html', account=account, perfil=perfil) #, vistos=vistos
 
 @app.route('/watched/<name>')
 def watched(name):
@@ -313,25 +307,18 @@ def watched(name):
     print(perfil)
 
     # Mando a llamar Peliculas y series
-    # cursor.execute(
-    # 'select distinct serie_pelicula from contenido inner join serie_peliculas ON serie_pelicula = serie_pelicula')
+    #cursor.execute(
+        #'select distinct serie_pelicula from contenido inner join serie_peliculas ON serie_pelicula = serie_pelicula')
     #vistos = cursor.fetchall()
 
     # Mandar a pagina de inicio del perfil
-    # , vistos=vistos
-    return render_template('watched.html', account=account, perfil=perfil)
+    return render_template('watched.html', account=account, perfil=perfil) #, vistos=vistos
 
 
 @app.route('/agregar_pos')
 def agregar_pos():
     # Mandar a pagina para agregar series o peliculas
     return render_template('agregar_pos.html')
-
-
-@app.route('/agregar_actores')
-def agregar_actores():
-    # Mandar a pagina para agregar series o peliculas
-    return render_template('agregar_actores.html')
 
 
 @app.route('/modificar_pos')
@@ -370,15 +357,33 @@ def borrar_pos():
     # Mandar a pagina para borrar series o peliculas
     return render_template('borrar_pos.html', series_peliculas=series_peliculas)
 
+@app.route('/favoritos')
+def favoritos(sp,lp,ima,name,cuenta):
+    
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
-@app.route('/favoritos/<name>/<link>/<ima>')
-def favoritos(name, link, ima):
-
+    print(sp)
     print(name)
-    print(link)
+    print(cuenta)
+    print(lp)
     print(ima)
     # Mandar a pagina de inicio del perfil
 
+    cursor.execute(
+        'SELECT * FROM perfiles WHERE nombre_perfil = (%s)', (name,))
+    perfil = cursor.fetchone()
+
+    cursor.execute(
+        'insert into favoritos (serie_pelicula,nombre_perfil,correo_cuenta,link_repro,imagen) values (%s,%s,%s,%s,%s)',(sp,name,cuenta,lp,ima))
+    conn.commit()
+
+    cursor.execute(
+        'select * from favoritos where nombre_perfil = (%s)', (name,))
+    favoritos = cursor.fetchall() 
+
+    return render_template('mylist.html',favoritos = favoritos,perfil=perfil)
+
+   
 
 @app.route('/logout')
 def logout():

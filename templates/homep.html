@@ -23,7 +23,7 @@
 {% for serie_pelicula in series_peliculas %}
 <a href="{{serie_pelicula['link_repro'] }}"><img src="{{serie_pelicula['imagen'] }}" alt=""></a>
 
-<a href="{{ url_for('mylist', name=perfil['nombre_perfil']) }}"> <button  style="font-size:24px">Favorito <i class="fa fa-heart"></i></button></a>
+<a href="{{ url_for('favoritos', sp=serie_pelicula['serie_pelicula'], name=perfil['nombre_perfil'], cuenta=perfil['email']), lp=serie_pelicula['link_repro'], ima=serie_pelicula['imagen'] }}" class="button">Click Here</a>
 
 
 {% endfor %}
