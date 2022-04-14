@@ -6,6 +6,8 @@
 <h1 class="h2">My list</h1>
 <p>Welcome Back, {{ perfil['nombre_perfil']}}!</p>
 
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
 <header>
     <nav class="main-nav">
         <a href="{{ url_for('homep', name=perfil['nombre_perfil']) }}">Back</a>
@@ -18,6 +20,8 @@
 {% for serie_pelicula in serie_pelicula %}
 
 <a href="{{serie_pelicula['link_repro'] }}"><img src="{{ serie_pelicula['imagen'] }}" alt=""></a>
+
+<a href="{{ url_for('borrar_favoritos', sp=serie_pelicula['serie_pelicula'], name=perfil['nombre_perfil'] )}}" class="fav">Eliminar de Favoritos</a>
 
 {% endfor %}
 

@@ -173,8 +173,14 @@ span.input-group-addon i {
   color: var(--dark);
 }
 
-.favoritos{
-  color:red;
-  font-size: 24px;
-  background: transparent;
+.fav{
+  position: relative;
+  padding: 10px;
+  color: #fff;
+  background: linear-gradient(to bottom, #2863a7 0%, #7545b4 100%);
+
+}
+
+.fav:hover{
+  color: #fff;
 }
