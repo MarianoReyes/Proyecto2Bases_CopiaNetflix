@@ -287,6 +287,7 @@ def mylist(name):
         'select * from serie_peliculas sp natural join favoritos f where nombre_perfil = (%s)', (name,))
     serie_pelicula = cursor.fetchall()
 
+
     # Mandar a pagina de inicio del perfil
     # , vistos=vistos
     return render_template('mylist.html', account=account, perfil=perfil, serie_pelicula=serie_pelicula)
@@ -395,29 +396,63 @@ def borrar_pos():
 def favoritos(sp, name, cuenta):
 
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+<<<<<<< Updated upstream
 
     print(sp)
     print(name)
     print(cuenta)
     # Mandar a pagina de inicio del perfil
 
+=======
+    
+>>>>>>> Stashed changes
     cursor.execute(
-        'SELECT * FROM perfiles WHERE nombre_perfil = (%s)', (name,))
-    perfil = cursor.fetchone()
+        'SELECT * FROM favoritos WHERE nombre_perfil = (%s)', (name,))
+    favoritos = cursor.fetchone()
+
+    if sp in favoritos:
+        flash('Serie / pelicula ya en favoritos')
+    else:
+        cursor.execute(
+            'SELECT * FROM perfiles WHERE nombre_perfil = (%s)', (name,))
+        perfil = cursor.fetchone()
 
     cursor.execute(
         'insert into favoritos (serie_pelicula,nombre_perfil,correo_cuenta) values (%s,%s,%s)', (sp, name, cuenta))
     conn.commit()
 
     cursor.execute(
+<<<<<<< Updated upstream
         'select * from favoritos where nombre_perfil = (%s)', (name,))
     favoritos = cursor.fetchall()
+=======
+        'select * from serie_peliculas sp natural join favoritos f where nombre_perfil = (%s)', (name,))
+    serie_pelicula = cursor.fetchall()
+
+    return render_template('mylist.html', perfil=perfil,serie_pelicula=serie_pelicula)
+
+@app.route('/borrar_favoritos/<sp>/<name>')
+def borrar_favoritos(sp,name):
+
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    cursor.execute(
+        'SELECT * FROM perfiles WHERE nombre_perfil = (%s)', (name,))
+    perfil = cursor.fetchone()
+
+    cursor.execute(
+        'DELETE FROM favoritos WHERE serie_pelicula= (%s)',(sp,))
+    conn.commit()
+    flash('Serie / Película borrada con exito')
+>>>>>>> Stashed changes
 
     cursor.execute(
         'select * from serie_peliculas sp natural join favoritos f where nombre_perfil = (%s)', (name,))
     serie_pelicula = cursor.fetchall()
 
     return render_template('mylist.html', perfil=perfil, serie_pelicula=serie_pelicula)
+
+
 
 
 @app.route('/logout')
