@@ -112,6 +112,7 @@ def register():
         email = request.form['email']
         tipocuenta = request.form['tipocuenta']
         admin = 0
+        fecha_creacion = '2022-04-14'
 
         _hashed_password = generate_password_hash(password)
 
@@ -131,8 +132,8 @@ def register():
             flash('Por favor llene el formulario!')
         else:
             # Account doesnt exists and the form data is valid, now insert new account into cuentas table
-            cursor.execute("INSERT INTO cuentas (fullname, username, password, email, tipocuenta, admin) VALUES (%s,%s,%s,%s,%s,%s)",
-                           (fullname, username, _hashed_password, email, tipocuenta, admin))
+            cursor.execute("INSERT INTO cuentas (fullname, username, password, email, tipocuenta, admin, fecha_creacion) VALUES (%s,%s,%s,%s,%s,%s, %s)",
+                           (fullname, username, _hashed_password, email, tipocuenta, admin, fecha_creacion))
             conn.commit()
             flash('Te has registrado correctamente!')
     elif request.method == 'POST':
@@ -452,6 +453,84 @@ def borrar_pos():
 
     # Mandar a pagina para borrar series o peliculas
     return render_template('borrar_pos.html', series_peliculas=series_peliculas)
+
+
+@app.route('/modificar_usuarios/', methods=['GET', 'POST'])
+def modificar_usuarios():
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    # Mando a llamar Peliculas y series
+    cursor.execute(
+        'select *  from cuentas')
+    usuarios = cursor.fetchall()
+    return render_template('modificar_usuarios.html', usuarios=usuarios)
+
+
+@app.route('/modificar_usuario/<usuario>', methods=['GET', 'POST'])
+def modificar_usuario(usuario):
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    usuario = usuario
+    # Check if "username", "password" and "email" POST requests exist (user submitted form)
+    if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form:
+        # Create variables for easy access
+        fullname = request.form['fullname']
+        username = request.form['username']
+        password = request.form['password']
+        email = request.form['email']
+        tipocuenta = request.form['tipocuenta']
+        admin = 0
+        fecha_creacion = request.form['fecha_creacion']
+
+        _hashed_password = generate_password_hash(password)
+
+        # Check if account exists using MySQL
+        cursor.execute(
+            'SELECT * FROM cuentas WHERE username = %s', (username,))
+        account = cursor.fetchone()
+        print(account)
+        # If account exists show error and validation checks
+        if account:
+            flash('La cuenta ya existe!')
+        elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
+            flash('Dirección de correo invalida!')
+        elif not re.match(r'[A-Za-z0-9]+', username):
+            flash('El usuario solo puede tener caracteres y números!')
+        elif not username or not password or not email:
+            flash('Por favor llene el formulario!')
+        else:
+            cursor.execute("UPDATE cuentas SET fullname = %s, username = %s, password = %s, email = %s, tipocuenta = %s, admin = %s, fecha_creacion = %s WHERE username = %s",
+                           (fullname, username, _hashed_password, email, tipocuenta, admin, fecha_creacion, usuario))
+            conn.commit()
+            flash('Has modificado correctamente!')
+    elif request.method == 'POST':
+        # Form is empty... (no POST data)
+        flash('Por favor llene el formulario!')
+    # Show registration form with message (if any)
+
+    return render_template('modificar_usuario.html', usuario=usuario)
+
+
+@app.route('/borrar_usuarios/', methods=['GET', 'POST'])
+def borrar_usuarios():
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    # Mando a llamar Peliculas y series
+    cursor.execute(
+        'select *  from cuentas')
+    usuarios = cursor.fetchall()
+    return render_template('borrar_usuarios.html', usuarios=usuarios)
+
+
+@app.route('/borrar_usuario/<usuario>', methods=['GET', 'POST'])
+def borrar_usuario(usuario):
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    # Mando a llamar Peliculas y series
+    cursor.execute(
+        'DELETE FROM cuentas WHERE username=%s', (usuario,))
+    conn.commit()
+    flash("Usuario desactivado con éxito")
+    return render_template('borrar_usuarios.html')
 
 
 @app.route('/favoritos/<name>/<sp>/<cuenta>')
