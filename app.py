@@ -289,8 +289,12 @@ def mylist(name):
     perfil = cursor.fetchone()
     print(perfil)
 
+    cursor.execute(
+        'select * from serie_peliculas sp natural join favoritos f where nombre_perfil = (%s)', (name,))
+    serie_pelicula = cursor.fetchall()
+
     # Mandar a pagina de inicio del perfil
-    return render_template('mylist.html', account=account, perfil=perfil) #, vistos=vistos
+    return render_template('mylist.html', account=account, perfil=perfil,serie_pelicula=serie_pelicula) #, vistos=vistos
 
 @app.route('/watched/<name>')
 def watched(name):
@@ -357,16 +361,14 @@ def borrar_pos():
     # Mandar a pagina para borrar series o peliculas
     return render_template('borrar_pos.html', series_peliculas=series_peliculas)
 
-@app.route('/favoritos/<sp>/<name>/<cuenta>/<ima>/<lp>')
-def favoritos(sp,name,cuenta,ima,lp):
+@app.route('/favoritos/<name>/<sp>/<cuenta>')
+def favoritos(sp,name,cuenta):
     
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     
     print(sp)
     print(name)
     print(cuenta)
-    print(ima)
-    print(lp)
     # Mandar a pagina de inicio del perfil
 
     cursor.execute(
@@ -374,16 +376,18 @@ def favoritos(sp,name,cuenta,ima,lp):
     perfil = cursor.fetchone()
 
     cursor.execute(
-        'insert into favoritos (serie_pelicula,nombre_perfil,correo_cuenta,imagen,link_repro) values (%s,%s,%s,%s)',(sp,name,cuenta,ima,lp,))
+        'insert into favoritos (serie_pelicula,nombre_perfil,correo_cuenta) values (%s,%s,%s)',(sp,name,cuenta))
     conn.commit()
 
     cursor.execute(
         'select * from favoritos where nombre_perfil = (%s)', (name,))
     favoritos = cursor.fetchall() 
 
-    return render_template('mylist.html', favoritos=favoritos,perfil=perfil)
+    cursor.execute(
+        'select * from serie_peliculas sp natural join favoritos f where nombre_perfil = (%s)', (name,))
+    serie_pelicula = cursor.fetchall()
 
-   
+    return render_template('mylist.html', perfil=perfil,serie_pelicula=serie_pelicula)
 
 @app.route('/logout')
 def logout():

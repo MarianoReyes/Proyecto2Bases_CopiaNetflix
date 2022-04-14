@@ -15,9 +15,9 @@
     </nav>   
 </header>
 
-{% for favoritos in favoritos %}
+{% for serie_pelicula in serie_pelicula %}
 
-<a href="{{ favoritos['link_repro'] }}"><img src="{{ favoritos['imagen'] }}" alt=""></a>
+<a href="{{serie_pelicula['link_repro'] }}"><img src="{{ serie_pelicula['imagen'] }}" alt=""></a>
 
 {% endfor %}
 
