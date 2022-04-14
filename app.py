@@ -283,7 +283,6 @@ def mylist(name):
 
     print(name)
 
-
     cursor.execute(
         'SELECT * FROM perfiles WHERE nombre_perfil = (%s)', (name,))
     perfil = cursor.fetchone()
@@ -294,7 +293,9 @@ def mylist(name):
     serie_pelicula = cursor.fetchall()
 
     # Mandar a pagina de inicio del perfil
-    return render_template('mylist.html', account=account, perfil=perfil,serie_pelicula=serie_pelicula) #, vistos=vistos
+    # , vistos=vistos
+    return render_template('mylist.html', account=account, perfil=perfil)
+
 
 @app.route('/watched/<name>')
 def watched(name):
@@ -311,18 +312,40 @@ def watched(name):
     print(perfil)
 
     # Mando a llamar Peliculas y series
-    #cursor.execute(
-        #'select distinct serie_pelicula from contenido inner join serie_peliculas ON serie_pelicula = serie_pelicula')
+    # cursor.execute(
+    # 'select distinct serie_pelicula from contenido inner join serie_peliculas ON serie_pelicula = serie_pelicula')
     #vistos = cursor.fetchall()
 
     # Mandar a pagina de inicio del perfil
-    return render_template('watched.html', account=account, perfil=perfil) #, vistos=vistos
+    # , vistos=vistos
+    return render_template('watched.html', account=account, perfil=perfil)
 
 
 @app.route('/agregar_pos')
 def agregar_pos():
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    if request.method == 'POST' and 'nombre' in request.form and 'imagen' in request.form and 'link' in request.form and 'director' in request.form:
+        pelicula_serie = request.form['nombre']
+        imagen = request.form['imagen']
+        link = request.form['link']
+        director = request.form['director']
+        categoria = request.form['categoria']
+        premios = request.form['premios']
+        estreno = request.form['estreno']
+        duracion = request.form['duracion']
+
     # Mandar a pagina para agregar series o peliculas
     return render_template('agregar_pos.html')
+
+
+@app.route('/agregar_actores')
+def agregar_pos(pos):
+
+    pelicula_serie = pos
+
+    # Mandar a pagina para agregar series o peliculas
+    return render_template('agregar_actores.html')
 
 
 @app.route('/modificar_pos')
@@ -361,11 +384,12 @@ def borrar_pos():
     # Mandar a pagina para borrar series o peliculas
     return render_template('borrar_pos.html', series_peliculas=series_peliculas)
 
-@app.route('/favoritos/<name>/<sp>/<cuenta>')
-def favoritos(sp,name,cuenta):
-    
+
+@app.route('/favoritos/<sp>/<name>/<cuenta>/<ima>/<lp>')
+def favoritos(sp, name, cuenta, ima, lp):
+
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    
+
     print(sp)
     print(name)
     print(cuenta)
@@ -376,18 +400,15 @@ def favoritos(sp,name,cuenta):
     perfil = cursor.fetchone()
 
     cursor.execute(
-        'insert into favoritos (serie_pelicula,nombre_perfil,correo_cuenta) values (%s,%s,%s)',(sp,name,cuenta))
+        'insert into favoritos (serie_pelicula,nombre_perfil,correo_cuenta,imagen,link_repro) values (%s,%s,%s,%s)', (sp, name, cuenta, ima, lp,))
     conn.commit()
 
     cursor.execute(
         'select * from favoritos where nombre_perfil = (%s)', (name,))
-    favoritos = cursor.fetchall() 
+    favoritos = cursor.fetchall()
 
-    cursor.execute(
-        'select * from serie_peliculas sp natural join favoritos f where nombre_perfil = (%s)', (name,))
-    serie_pelicula = cursor.fetchall()
+    return render_template('mylist.html', favoritos=favoritos, perfil=perfil)
 
-    return render_template('mylist.html', perfil=perfil,serie_pelicula=serie_pelicula)
 
 @app.route('/logout')
 def logout():
