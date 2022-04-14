@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset="utf-8">
+  <title>Modificar Serie o Pelicula</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
+  <!-- Google Fonts -->
+  <link href='https://fonts.googleapis.com/css?family=Passion+One' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Oxygen' rel='stylesheet' type='text/css'>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+ </head>
+ <body style="background-color:#8ea1b8;">
+ <div class="container">
+    <div class="row" style="margin-top: 10px;">
+        <div class="main-login main-center">
+            <h5>Elija una del listado de Series y Películas</h5>
+            <ul>
+                {% for serie_pelicula in series_peliculas %}
+                <li><a href="{{url_for('modificaruno', nombrepos=serie_pelicula['serie_pelicula'])}}" class="link_normal">{{serie_pelicula['serie_pelicula'] }}</a></li>
+                {% endfor %}    
+            </ul>
+
+            <a href="{{ url_for('home_admin') }}" class="btn btn-dark " style="background: #4a6ebb!important; margin: 5px 0;">Regresar al dashboard</a>
+        </div>
+        
+    </div>
+  </div>
+
+ <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>  
+ </body>
+</html>

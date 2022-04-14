@@ -287,7 +287,6 @@ def mylist(name):
         'select * from serie_peliculas sp natural join favoritos f where nombre_perfil = (%s)', (name,))
     serie_pelicula = cursor.fetchall()
 
-
     # Mandar a pagina de inicio del perfil
     # , vistos=vistos
     return render_template('mylist.html', account=account, perfil=perfil, serie_pelicula=serie_pelicula)
@@ -355,10 +354,73 @@ def agregar_actores(nombrepos, nombreac):
     return ('/')
 
 
-@app.route('/modificar_pos')
-def modificar_pos():
+@app.route('/premodificar_pos/', methods=['GET', 'POST'])
+def premodificar_pos():
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    # Mando a llamar Peliculas y series
+    cursor.execute(
+        'select distinct serie_pelicula,imagen,link_repro from serie_peliculas')
+    series_peliculas = cursor.fetchall()
+
     # Mandar a pagina para agregar series o peliculas
-    return render_template('modificar_pos.html')
+    return render_template('premodificar_pos.html', series_peliculas=series_peliculas)
+
+
+@app.route('/modificaruno/<nombrepos>', methods=['POST', 'GET'])
+def modificaruno(nombrepos):
+    print(nombrepos)
+    return render_template('modificaruno.html', nombrepos=nombrepos)
+
+
+@app.route('/modificar_pos/<nombrepos>', methods=['POST', 'GET'])
+def modificar_pos(nombrepos):
+    nombrepos = nombrepos
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    if request.method == 'POST' and 'nombre' in request.form and 'imagen' in request.form and 'link' in request.form and 'director' in request.form:
+        pelicula_serie = request.form['nombre']
+        imagen = request.form['imagen']
+        link = request.form['link']
+        director = request.form['director']
+        categoria = request.form['categoria']
+        premios = request.form['premios']
+        estreno = request.form['estreno']
+        duracion = request.form['duracion']
+
+        # Account doesnt exists and the form data is valid, now insert new account into cuentas table
+        cursor.execute("UPDATE serie_peliculas SET serie_pelicula = %s, imagen = %s, link_repro = %s, director = %s, categoria = %s, premios = %s, estreno = %s, duracion = %s WHERE serie_pelicula = %s",
+                       (pelicula_serie, imagen, link, director, categoria, premios, estreno, duracion, nombrepos))
+        # UPDATE weather SET temp_lo = temp_lo+1, temp_hi = temp_lo+15, prcp = DEFAULT WHERE city = 'San Francisco'
+        conn.commit()
+        flash('Serie/Película actualizada con exito')
+    return render_template('modificar_pos.html',  nombrepos=nombrepos)
+
+
+@app.route('/modificar_actores/<nombrepos>', methods=['POST', 'GET'])
+def modificar_actores(nombrepos):
+    nombrepos = nombrepos
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    # Mando a llamar Peliculas y series
+    cursor.execute(
+        'select * from actores where serie_pelicula = %s', (nombrepos,))
+    actores = cursor.fetchall()
+    print(nombrepos)
+    print(actores)
+
+    if request.method == 'POST' and 'nombrea' in request.form and 'nombren' in request.form:
+        nombreantiguo = request.form['nombrea']
+        nombrenuevo = request.form['nombren']
+
+        # Account doesnt exists and the form data is valid, now insert new account into cuentas table
+        cursor.execute("UPDATE actores SET nombre_actor = %s WHERE nombre_actor= %s AND serie_pelicula = %s",
+                       (nombrenuevo, nombreantiguo, nombrepos))
+        # UPDATE weather SET temp_lo = temp_lo+1, temp_hi = temp_lo+15, prcp = DEFAULT WHERE city = 'San Francisco'
+        conn.commit()
+        flash('Serie/Película actualizada con exito')
+
+    return render_template('modificar_actores.html',  nombrepos=nombrepos, actores=actores)
 
 
 @app.route('/borrar_pos', methods=['GET', 'POST'])
@@ -396,7 +458,7 @@ def borrar_pos():
 def favoritos(sp, name, cuenta):
 
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    
+
     cursor.execute(
         'SELECT * FROM favoritos WHERE nombre_perfil = (%s)', (name,))
     favoritos = cursor.fetchone()
@@ -416,10 +478,11 @@ def favoritos(sp, name, cuenta):
         'select * from serie_peliculas sp natural join favoritos f where nombre_perfil = (%s)', (name,))
     serie_pelicula = cursor.fetchall()
 
-    return render_template('mylist.html', perfil=perfil,serie_pelicula=serie_pelicula)
+    return render_template('mylist.html', perfil=perfil, serie_pelicula=serie_pelicula)
+
 
 @app.route('/borrar_favoritos/<sp>/<name>')
-def borrar_favoritos(sp,name):
+def borrar_favoritos(sp, name):
 
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
@@ -428,7 +491,7 @@ def borrar_favoritos(sp,name):
     perfil = cursor.fetchone()
 
     cursor.execute(
-        'DELETE FROM favoritos WHERE serie_pelicula= (%s)',(sp,))
+        'DELETE FROM favoritos WHERE serie_pelicula= (%s)', (sp,))
     conn.commit()
     flash('Serie / Película borrada con exito')
 
@@ -436,7 +499,7 @@ def borrar_favoritos(sp,name):
         'select * from serie_peliculas sp natural join favoritos f where nombre_perfil = (%s)', (name,))
     serie_pelicula = cursor.fetchall()
 
-    return render_template('mylist.html', perfil=perfil,serie_pelicula=serie_pelicula)
+    return render_template('mylist.html', perfil=perfil, serie_pelicula=serie_pelicula)
 
 
 @app.route('/logout')

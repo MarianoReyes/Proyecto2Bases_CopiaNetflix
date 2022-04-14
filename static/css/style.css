@@ -184,3 +184,11 @@ span.input-group-addon i {
 .fav:hover{
   color: #fff;
 }
+
+.link_normal{
+  color: #fff;
+}
+
+.link_normal:hover{
+  color: #7545b4;
+}

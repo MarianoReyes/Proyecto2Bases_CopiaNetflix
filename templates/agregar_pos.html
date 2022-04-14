@@ -2,7 +2,7 @@
 <html>
  <head>
   <meta charset="utf-8">
-  <title>Register</title>
+  <title>Agregar Serie o Pelicula</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
   <!-- Google Fonts -->
@@ -163,12 +163,17 @@
             localStorage.setItem("poskey",pos)
         }
         function guardaractores(){
-            var nombreac=document.querySelector('#nombreac').value;
-            const request = new XMLHttpRequest()
             var pos = localStorage.getItem("poskey")
-            request.open('POST', `/agregar_actores/${JSON.stringify(pos)}/${JSON.stringify(nombreac)}`)
-            request.send()
-            alert('Actor asignado a serie/película con éxito. Si desea asignar otro actor vuelva a escribir en la casilla y presione el botón de agregar')           
+            if(pos){
+                var nombreac=document.querySelector('#nombreac').value;
+                const request = new XMLHttpRequest()
+                request.open('POST', `/agregar_actores/${JSON.stringify(pos)}/${JSON.stringify(nombreac)}`)
+                request.send()
+                alert('Actor asignado a serie/película con éxito. Si desea asignar otro actor vuelva a escribir en la casilla y presione el botón de agregar')           
+            }
+            else{
+                alert('No se ha ingresado ningun nombre de serie/pelicula para poder asignar los actores')
+            }
         }
         
     </script>
