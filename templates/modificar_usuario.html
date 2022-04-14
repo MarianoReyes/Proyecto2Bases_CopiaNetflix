@@ -15,7 +15,7 @@
    <div class="row main">
     <div class="main-login main-center">
     <h5>Vuelve a ingresar toda la información de la cuenta seleccionada</h5>
-     <form action="{{ url_for('modificar_usuario', usuario=usuario['username']) }}" method="post" autocomplete="off"> 
+     <form action="{{url_for('modificar_usuario', usuario=usuario['username'])}}" method="post" autocomplete="off"> 
       <div class="form-group">
        <label for="name" class="cols-sm-2 control-label">Tu Nombre</label>
        <div class="cols-sm-10">
