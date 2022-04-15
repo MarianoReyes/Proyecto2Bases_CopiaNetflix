@@ -16,7 +16,7 @@
         <a href="{{ url_for('home') }}">Back</a>
         <a  href="{{ url_for('mylist', name=perfil['nombre_perfil']) }}">My List</a>
         <a  href="{{ url_for('watched', name=perfil['nombre_perfil']) }}">Watched</a>
-        <form method="POST" action="{{ url_for('search')}}" class="d-flex">
+        <form method="POST" action="{{ url_for('search', name=perfil['nombre_perfil']) }}" class="d-flex">
             {{ form.hidden_tag() }}
             <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="searched">
             <button class="btn btn-outline-secondary" type="submit">Search</button>

@@ -22,35 +22,30 @@
 
 	{% for post in posts %}
 
-		<a href="{{serie_pelicula['link_repro'] }}"><img src="{{serie_pelicula['imagen'] }}" alt=""></a>
+		<a href="{{post['link_repro'] }}"><img src="{{post['imagen'] }}" alt=""></a>
 
 	{% endfor %}
 
 	{% for director in directores %}
 
-		<a href="{{serie_pelicula['link_repro'] }}"><img src="{{serie_pelicula['imagen'] }}" alt=""></a>
+		<a href="{{director['link_repro'] }}"><img src="{{director['imagen'] }}" alt=""></a>
 
 	{% endfor %}
 
 	{% for actor in actores %}
 
-		<a href="{{serie_pelicula['link_repro'] }}"><img src="{{serie_pelicula['imagen'] }}" alt=""></a>
+		<a href="{{actor['link_repro'] }}"><img src="{{actor['imagen'] }}" alt=""></a>
 
 	{% endfor %}
 
 	{% for categoria in categorias %}
 
-		<a href="{{serie_pelicula['link_repro'] }}"><img src="{{serie_pelicula['imagen'] }}" alt=""></a>
+		<a href="{{categoria['link_repro'] }}"><img src="{{categoria['imagen'] }}" alt=""></a>
 
 	{% endfor %}
 
 	<br/><br/>
 </div>
 <br/>
-	{% endfor %}
-
-	{% else %}
-	Lo siento, <strong>{{ searched }}</strong> no se encontro...
-	{% endif %}
 
 {% endblock %}

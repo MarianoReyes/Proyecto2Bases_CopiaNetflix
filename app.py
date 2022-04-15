@@ -609,8 +609,8 @@ class SearchForm(FlaskForm):
 
 #Funcion de buscar
 
-@app.route('/search', methods=["POST"])
-def search():
+@app.route('/search/<name>', methods=["POST"])
+def search(name):
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     form = SearchForm()
     #posts = Post.query
@@ -618,6 +618,10 @@ def search():
 
         #Obtener la data enviada
         post = form.searched.data
+
+        cursor.execute(
+            'SELECT * FROM perfiles WHERE nombre_perfil = (%s)', (name,))
+        perfil = cursor.fetchone()
 
         #Query a la base de datos
         #pelicula o serie
@@ -627,18 +631,18 @@ def search():
 
         #director
         cursor.execute(
-            'select serie_pelicula,imagen,link_repro from serie_peliculas where director like %s',(post))
+            'select serie_pelicula,imagen,link_repro from serie_peliculas where director like %s',(post,))
         director= cursor.fetchall()
 
         #actor
         cursor.execute(
-            'select serie_pelicula from actores where nombre_actor like  %s',(post))
+            'select serie_pelicula from actores where nombre_actor like  %s',(post,))
         actor= cursor.fetchall()
 
         #categoria
         #director
         cursor.execute(
-            'select serie_pelicula,imagen,link_repro from serie_peliculas where categoria like %s',(post))
+            'select serie_pelicula,imagen,link_repro from serie_peliculas where categoria like %s',(post,))
         categoria= cursor.fetchall()
 
         return render_template("search.html",
@@ -647,7 +651,8 @@ def search():
 		 posts = posts,
          actores=actor,
          directores=director,
-         categorias=categoria)
+         categorias=categoria,
+         perfil=perfil)
 
 
 @app.route('/logout')
