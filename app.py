@@ -517,12 +517,9 @@ def favoritos(sp, name, cuenta):
         'SELECT * FROM favoritos WHERE nombre_perfil = (%s)', (name,))
     favoritos = cursor.fetchone()
 
-    if sp in favoritos:
-        flash('Serie / pelicula ya en favoritos')
-    else:
-        cursor.execute(
-            'SELECT * FROM perfiles WHERE nombre_perfil = (%s)', (name,))
-        perfil = cursor.fetchone()
+    cursor.execute(
+        'SELECT * FROM perfiles WHERE nombre_perfil = (%s)', (name,))
+    perfil = cursor.fetchone()
 
     cursor.execute(
         'insert into favoritos (serie_pelicula,nombre_perfil,correo_cuenta) values (%s,%s,%s)', (sp, name, cuenta))
