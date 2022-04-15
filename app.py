@@ -296,27 +296,6 @@ def mylist(name):
     return render_template('mylist.html', account=account, perfil=perfil, serie_pelicula=serie_pelicula)
 
 
-@app.route('/watched/<name>')
-def watched(name):
-    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-
-    cursor.execute('SELECT * FROM cuentas WHERE id = %s', [session['id']])
-    account = cursor.fetchone()
-
-    cursor.execute(
-        'SELECT * FROM perfiles WHERE nombre_perfil = (%s)', (name,))
-    perfil = cursor.fetchone()
-
-    # Mando a llamar Peliculas y series
-    # cursor.execute(
-    # 'select distinct serie_pelicula from contenido inner join serie_peliculas ON serie_pelicula = serie_pelicula')
-    #vistos = cursor.fetchall()
-
-    # Mandar a pagina de inicio del perfil
-    # , vistos=vistos
-    return render_template('watched.html', account=account, perfil=perfil)
-
-
 @app.route('/agregar_pos', methods=['POST', 'GET'])
 def agregar_pos():
 
@@ -575,6 +554,46 @@ def borrar_favoritos(sp, name):
     serie_pelicula = cursor.fetchall()
 
     return render_template('mylist.html', perfil=perfil, serie_pelicula=serie_pelicula)
+
+@app.route('/watched/<name>')
+def watched(name):
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    cursor.execute('SELECT * FROM cuentas WHERE id = %s', [session['id']])
+    account = cursor.fetchone()
+
+    cursor.execute(
+        'SELECT * FROM perfiles WHERE nombre_perfil = (%s)', (name,))
+    perfil = cursor.fetchone()
+
+    cursor.execute(
+        'select * from serie_peliculas sp natural join favoritos f where nombre_perfil = (%s)', (name,))
+    serie_pelicula = cursor.fetchall()
+
+    # Mandar a pagina de inicio del perfil
+    # , vistos=vistos
+    return render_template('watched.html', account=account, perfil=perfil, serie_pelicula=serie_pelicula)
+
+@app.route('/vistos/<name>/<sp>/<cuenta>')
+def vistos(sp, name, cuenta):
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    cursor.execute(
+        'SELECT * FROM contenido WHERE nombre_perfil = (%s)', (name,))
+    contenido = cursor.fetchone()
+
+    cursor.execute(
+        'SELECT * FROM perfiles WHERE nombre_perfil = (%s)', (name,))
+    perfil = cursor.fetchone()
+
+    cursor.execute(
+        'insert into contenido (serie_pelicula,nombre_perfil,correo_cuenta) values (%s,%s,%s)', (sp, name, cuenta))
+    conn.commit()
+
+    cursor.execute(
+        'select * from serie_peliculas sp natural join contenido c where nombre_perfil = (%s)', (name,))
+    serie_pelicula = cursor.fetchall()
+    
 
 #Pasarse datos con el navbar
 # Pass Stuff To Navbar

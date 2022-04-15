@@ -15,4 +15,10 @@
     </nav>   
 </header>
 
+{% for serie_pelicula in serie_pelicula %}
+
+<a href="{{serie_pelicula['link_repro'] }}"><img src="{{ serie_pelicula['imagen'] }}" alt=""></a>
+
+{% endfor %}
+
 {% endblock %}
