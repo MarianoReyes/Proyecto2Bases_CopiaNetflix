@@ -594,21 +594,41 @@ class SearchForm(FlaskForm):
 def search():
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     form = SearchForm()
-    posts = Post.query
+    #posts = Post.query
     if form.validate_on_submit():
 
         #Obtener la data enviada
-        post.searched = post.searched.data
+        post = form.searched.data
 
         #Query a la base de datos
+        #pelicula o serie
         cursor.execute(
-            'select * from serie_peliculas where like ')
+            'select serie_pelicula,imagen,link_repro from serie_peliculas where serie_pelicula like %s',(post,))
         posts= cursor.fetchall()
+
+        #director
+        cursor.execute(
+            'select serie_pelicula,imagen,link_repro from serie_peliculas where director like %s',(post))
+        director= cursor.fetchall()
+
+        #actor
+        cursor.execute(
+            'select serie_pelicula from actores where nombre_actor like  %s',(post))
+        actor= cursor.fetchall()
+
+        #categoria
+        #director
+        cursor.execute(
+            'select serie_pelicula,imagen,link_repro from serie_peliculas where categoria like %s',(post))
+        categoria= cursor.fetchall()
 
         return render_template("search.html",
 		 form=form,
-		 searched = post.searched,
-		 posts = posts)
+		 searched = post,
+		 posts = posts,
+         actores=actor,
+         directores=director,
+         categorias=categoria)
 
 
 @app.route('/logout')
