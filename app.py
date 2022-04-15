@@ -589,21 +589,27 @@ class SearchForm(FlaskForm):
 	submit = SubmitField("Submit")
 
 #Funcion de buscar
+
 @app.route('/search', methods=["POST"])
 def search():
-	form = SearchForm()
-	posts = Posts.query
-	if form.validate_on_submit():
-		# Get data from submitted form
-		post.searched = form.searched.data
-		# Query the Database
-		posts = posts.filter(Posts.content.like('%' + post.searched + '%'))
-		posts = posts.order_by(Posts.title).all()
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    form = SearchForm()
+    posts = Post.query
+    if form.validate_on_submit():
 
-		return render_template("search.html",
+        #Obtener la data enviada
+        post.searched = post.searched.data
+
+        #Query a la base de datos
+        cursor.execute(
+            'select * from serie_peliculas where like ')
+        posts= cursor.fetchall()
+
+        return render_template("search.html",
 		 form=form,
 		 searched = post.searched,
 		 posts = posts)
+
 
 @app.route('/logout')
 def logout():
