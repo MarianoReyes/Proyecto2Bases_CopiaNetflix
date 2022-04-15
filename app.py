@@ -633,7 +633,7 @@ def search(name):
 
         #actor
         cursor.execute(
-            'select serie_pelicula from actores where nombre_actor like  %s',(post,))
+            'select serie_pelicula,imagen,link_repro from actores where nombre_actor like  %s',(post,))
         actor= cursor.fetchall()
 
         #categoria
