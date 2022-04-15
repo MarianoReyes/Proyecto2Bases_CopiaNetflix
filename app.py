@@ -6,6 +6,9 @@ import psycopg2.extras
 import re
 from werkzeug.security import generate_password_hash, check_password_hash
 import json
+from wtforms import StringField, SubmitField, PasswordField, BooleanField, ValidationError, TextAreaField
+from wtforms.validators import DataRequired, EqualTo, Length
+from flask_wtf import FlaskForm
 
 app = Flask(__name__)
 app.secret_key = 'cairocoders-ednalan'
@@ -573,6 +576,34 @@ def borrar_favoritos(sp, name):
 
     return render_template('mylist.html', perfil=perfil, serie_pelicula=serie_pelicula)
 
+#Pasarse datos con el navbar
+# Pass Stuff To Navbar
+@app.context_processor
+def base():
+	form = SearchForm()
+	return dict(form=form)
+
+#Form del buscar
+class SearchForm(FlaskForm):
+	searched = StringField("Searched", validators=[DataRequired()])
+	submit = SubmitField("Submit")
+
+#Funcion de buscar
+@app.route('/search', methods=["POST"])
+def search():
+	form = SearchForm()
+	posts = Posts.query
+	if form.validate_on_submit():
+		# Get data from submitted form
+		post.searched = form.searched.data
+		# Query the Database
+		posts = posts.filter(Posts.content.like('%' + post.searched + '%'))
+		posts = posts.order_by(Posts.title).all()
+
+		return render_template("search.html",
+		 form=form,
+		 searched = post.searched,
+		 posts = posts)
 
 @app.route('/logout')
 def logout():
