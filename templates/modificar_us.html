@@ -14,8 +14,8 @@
  <div class="container">
    <div class="row main">
     <div class="main-login main-center">
-    <h5>Vuelve a ingresar toda la información de la cuenta seleccionada {{usuario}}</h5>
-     <form action="{{url_for('modificar_usuario', usuario=usuario)}}" method="post" autocomplete="off"> 
+    <h5>Vuelve a ingresar toda la información de la cuenta seleccionada</h5>
+     <form action="{{url_for('modificar_us', usuario=usuario['username'])}}" method="post" autocomplete="off"> 
       <div class="form-group">
        <label for="name" class="cols-sm-2 control-label">Tu Nombre</label>
        <div class="cols-sm-10">
@@ -70,16 +70,14 @@
       </div>
 
       <div class="form-group">
-        <label for="fechacreacion" class="cols-sm-2 control-label">Fecha de Creacion</label>
+        <label for="password" class="cols-sm-2 control-label">Fecha de Creacion</label>
         <div class="cols-sm-10">
             <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-lock fa-lg" aria-hidden="true"></i></span>
-                <input type="date" class="form-control" name="fechacreacion" id="fechacreacion" required  placeholder="Ingresa la fecha de creacion"/>
+                <input type="date" class="form-control" name="fecha_creacion" id="fecha_creacion" required  placeholder="Ingresa la fecha de creacion"/>
             </div>
         </div>
       </div>
-
-
   
       <div class="form-group ">
         {% with messages = get_flashed_messages()  %}

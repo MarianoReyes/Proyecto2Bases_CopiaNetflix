@@ -470,43 +470,36 @@ def modificar_usuarios():
 def modificar_usuario(usuario):
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     usuario = usuario
+
     # Check if "username", "password" and "email" POST requests exist (user submitted form)
-    if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form:
-        # Create variables for easy access
-        fullname = request.form['fullname']
-        username = request.form['username']
-        password = request.form['password']
-        email = request.form['email']
-        tipocuenta = request.form['tipocuenta']
-        admin = 0
-        fecha_creacion = request.form['fecha_creacion']
+    if request.method == 'POST':
+        if 'username' in request.form and 'password' in request.form and 'email' in request.form:
+            # Create variables for easy access
+            fullname = request.form['fullname']
+            username = request.form['username']
+            password = request.form['password']
+            email = request.form['email']
+            tipocuenta = request.form['tipocuenta']
+            admin = 0
+            fecha_creacion = request.form['fechacreacion']
 
-        _hashed_password = generate_password_hash(password)
+            _hashed_password = generate_password_hash(password)
 
-        # Check if account exists using MySQL
-        cursor.execute(
-            'SELECT * FROM cuentas WHERE username = %s', (username,))
-        account = cursor.fetchone()
-        print(account)
-        # If account exists show error and validation checks
-        if account:
-            flash('La cuenta ya existe!')
-        elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
-            flash('Dirección de correo invalida!')
-        elif not re.match(r'[A-Za-z0-9]+', username):
-            flash('El usuario solo puede tener caracteres y números!')
-        elif not username or not password or not email:
+            if not re.match(r'[^@]+@[^@]+\.[^@]+', email):
+                flash('Dirección de correo invalida!')
+            elif not re.match(r'[A-Za-z0-9]+', username):
+                flash('El usuario solo puede tener caracteres y números!')
+            elif not username or not password or not email:
+                flash('Por favor llene el formulario!')
+            else:
+                cursor.execute("UPDATE cuentas SET fullname = %s, username = %s, password = %s, email = %s, tipocuenta = %s, admin = %s, fecha_creacion = %s WHERE username = %s",
+                               (fullname, username, _hashed_password, email, tipocuenta, admin, fecha_creacion, usuario))
+                conn.commit()
+                flash('Has modificado correctamente!')
+        elif request.method == 'POST':
+            # Form is empty... (no POST data)
             flash('Por favor llene el formulario!')
-        else:
-            cursor.execute("UPDATE cuentas SET fullname = %s, username = %s, password = %s, email = %s, tipocuenta = %s, admin = %s, fecha_creacion = %s WHERE username = %s",
-                           (fullname, username, _hashed_password, email, tipocuenta, admin, fecha_creacion, usuario))
-            conn.commit()
-            flash('Has modificado correctamente!')
-    elif request.method == 'POST':
-        # Form is empty... (no POST data)
-        flash('Por favor llene el formulario!')
-    # Show registration form with message (if any)
-
+        # Show registration form with message (if any)
     return render_template('modificar_usuario.html', usuario=usuario)
 
 
