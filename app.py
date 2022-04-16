@@ -571,7 +571,7 @@ def watched(name):
     # , vistos=vistos
     return render_template('watched.html', account=account, perfil=perfil, serie_pelicula=serie_pelicula)
 
-@app.route('/vistos/<name>/<sp>/<cuenta>')
+@app.route('/vistos/<name>/<sp>/<cuenta>', methods=['GET', 'POST'])
 def vistos(sp, name, cuenta):
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
@@ -590,6 +590,15 @@ def vistos(sp, name, cuenta):
     cursor.execute(
         'select * from serie_peliculas sp natural join contenido c where nombre_perfil = (%s)', (name,))
     serie_pelicula = cursor.fetchall()
+
+    cursor.execute(
+       'select link_repro from serie_peliculas sp natural join contenido c where serie_pelicula = (%s) and nombre_perfil = (%s)', (sp,name,)
+    )
+    link = cursor.fetchone()
+
+    print(link)
+
+    return redirect(link, code=302)
     
 
 #Pasarse datos con el navbar
@@ -616,6 +625,8 @@ def search(name):
         #Obtener la data enviada
         post = form.searched.data
 
+        search = "%{}%".format(post)
+
         cursor.execute(
             'SELECT * FROM perfiles WHERE nombre_perfil = (%s)', (name,))
         perfil = cursor.fetchone()
@@ -623,23 +634,24 @@ def search(name):
         #Query a la base de datos
         #pelicula o serie
         cursor.execute(
-            'select serie_pelicula,imagen,link_repro from serie_peliculas where serie_pelicula like %s',(post,))
+            'select serie_pelicula,imagen,link_repro from serie_peliculas where serie_pelicula like %s',(search,))
         posts= cursor.fetchall()
+
 
         #director
         cursor.execute(
-            'select serie_pelicula,imagen,link_repro from serie_peliculas where director like %s',(post,))
+            'select serie_pelicula,imagen,link_repro from serie_peliculas where director like %s',(search,))
         director= cursor.fetchall()
 
         #actor
         cursor.execute(
-            'select serie_pelicula,imagen,link_repro from actores where nombre_actor like  %s',(post,))
+            'select serie_pelicula,imagen,link_repro from actores where nombre_actor like  %s',(search,))
         actor= cursor.fetchall()
 
         #categoria
         #director
         cursor.execute(
-            'select serie_pelicula,imagen,link_repro from serie_peliculas where categoria like %s',(post,))
+            'select serie_pelicula,imagen,link_repro from serie_peliculas where categoria like %s',(search,))
         categoria= cursor.fetchall()
 
         return render_template("search.html",
