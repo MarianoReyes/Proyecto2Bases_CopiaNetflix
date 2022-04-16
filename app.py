@@ -508,6 +508,145 @@ def borrar_usuario(usuario):
     return render_template('borrar_usuarios.html')
 
 
+@app.route('/agregar_anunciante', methods=['POST', 'GET'])
+def agregar_anunciante():
+
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    if request.method == 'POST' and 'nombrean' in request.form and 'correo' in request.form and 'telefono' in request.form:
+        nombre_anunciante = request.form['nombrean']
+        correo_contacto = request.form['correo']
+        telefono = request.form['telefono']
+
+        # Account doesnt exists and the form data is valid, now insert new account into cuentas table
+        cursor.execute("INSERT INTO anunciantes (nombre_anunciante, correo_contacto, telefono) VALUES (%s,%s,%s)",
+                       (nombre_anunciante, correo_contacto, telefono))
+        conn.commit()
+        flash('Anunciante creado con éxito')
+
+    # Mandar a pagina para agregar series o peliculas
+    return render_template('agregar_anunciante.html')
+
+
+@app.route('/borrar_anunciantes/', methods=['GET', 'POST'])
+def borrar_anunciantes():
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    # Mando a llamar a anunciantes y anuncios
+    cursor.execute(
+        'select *  from anunciantes')
+    anunciantes = cursor.fetchall()
+
+    cursor.execute(
+        'select *  from anuncios')
+    anuncios = cursor.fetchall()
+    return render_template('borrar_anunciantes.html', anunciantes=anunciantes, anuncios=anuncios)
+
+
+@app.route('/borrar_anunciante/<anunciante>', methods=['GET', 'POST'])
+def borrar_anunciante(anunciante):
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    # Mando a eliminar a anunciantes y anuncios con el nombre del anunciante
+    cursor.execute(
+        'DELETE FROM anunciantes WHERE nombre_anunciante=%s', (anunciante,))
+    cursor.execute(
+        'DELETE FROM anuncios WHERE anunciante=%s', (anunciante,))
+    conn.commit()
+    flash("Anunciante borrado con éxito")
+    return render_template('borrar_anunciantes.html')
+
+
+@app.route('/agregar_anuncio', methods=['POST', 'GET'])
+def agregar_anuncio():
+
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    cursor.execute(
+        'select *  from anunciantes')
+    anunciantes = cursor.fetchall()
+
+    if request.method == 'POST' and 'nombrean' in request.form and 'link' in request.form and 'anunciante' in request.form:
+        nombre_anuncio = request.form['nombrean']
+        link = request.form['link']
+        anunciante = request.form['anunciante']
+
+        # Account doesnt exists and the form data is valid, now insert new account into cuentas table
+        cursor.execute("INSERT INTO anuncios (nombre_anuncio, link_anuncio, anunciante) VALUES (%s,%s,%s)",
+                       (nombre_anuncio, link, anunciante))
+        conn.commit()
+        flash('Anuncio creado con éxito')
+
+    # Mandar a pagina para agregar series o peliculas
+    return render_template('agregar_anuncio.html', anunciantes=anunciantes)
+
+
+@app.route('/modificar_anuncios/', methods=['GET', 'POST'])
+def modificar_anuncios():
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    # Mando a llamar a anunciantes y anuncios
+    cursor.execute(
+        'select *  from anunciantes')
+    anunciantes = cursor.fetchall()
+    cursor.execute(
+        'select *  from anuncios')
+    anuncios = cursor.fetchall()
+    return render_template('modificar_anuncios.html', anuncios=anuncios, anunciantes=anunciantes)
+
+
+@app.route('/modificar_anuncio/<anuncio>', methods=['GET', 'POST'])
+def modificar_anuncio(anuncio):
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    anuncio = anuncio
+
+    cursor.execute(
+        'select *  from anunciantes')
+    anunciantes = cursor.fetchall()
+    # Check if "username", "password" and "email" POST requests exist (user submitted form)
+    if request.method == 'POST':
+        if request.method == 'POST' and 'nombrean' in request.form and 'link' in request.form and 'anunciante' in request.form:
+            nombre_anuncio = request.form['nombrean']
+            link = request.form['link']
+            anunciante = request.form['anunciante']
+
+            cursor.execute("UPDATE anuncios SET nombre_anuncio = %s, link_anuncio = %s, anunciante = %s WHERE nombre_anuncio = %s",
+                           (nombre_anuncio, link, anunciante, anuncio))
+            conn.commit()
+            flash('Has modificado el anuncio correctamente!')
+        elif request.method == 'POST':
+            # Form is empty... (no POST data)
+            flash('Por favor llene el formulario!')
+        # Show registration form with message (if any)
+    return render_template('modificar_anuncio.html', anuncio=anuncio, anunciantes=anunciantes)
+
+
+@app.route('/borrar_anuncios/', methods=['GET', 'POST'])
+def borrar_anuncios():
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    # Mando a llamar a anunciantes y anuncios
+    cursor.execute(
+        'select *  from anunciantes')
+    anunciantes = cursor.fetchall()
+
+    cursor.execute(
+        'select *  from anuncios')
+    anuncios = cursor.fetchall()
+    return render_template('borrar_anuncios.html', anunciantes=anunciantes, anuncios=anuncios)
+
+
+@app.route('/borrar_anuncio/<anuncio>', methods=['GET', 'POST'])
+def borrar_anuncio(anuncio):
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    cursor.execute(
+        'DELETE FROM anuncios WHERE nombre_anuncio=%s', (anuncio,))
+    conn.commit()
+    flash("Anuncio borrado con éxito")
+    return render_template('borrar_anunciantes.html')
+
+
 @app.route('/favoritos/<name>/<sp>/<cuenta>')
 def favoritos(sp, name, cuenta):
 
@@ -552,6 +691,7 @@ def borrar_favoritos(sp, name):
 
     return render_template('mylist.html', perfil=perfil, serie_pelicula=serie_pelicula)
 
+
 @app.route('/watched/<name>')
 def watched(name):
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
@@ -570,6 +710,7 @@ def watched(name):
     # Mandar a pagina de inicio del perfil
     # , vistos=vistos
     return render_template('watched.html', account=account, perfil=perfil, serie_pelicula=serie_pelicula)
+
 
 @app.route('/vistos/<name>/<sp>/<cuenta>', methods=['GET', 'POST'])
 def vistos(sp, name, cuenta):
@@ -592,7 +733,8 @@ def vistos(sp, name, cuenta):
     serie_pelicula = cursor.fetchall()
 
     cursor.execute(
-       'select link_repro from serie_peliculas sp natural join contenido c where serie_pelicula = (%s) and nombre_perfil = (%s)', (sp,name,)
+        'select link_repro from serie_peliculas sp natural join contenido c where serie_pelicula = (%s) and nombre_perfil = (%s)', (
+            sp, name,)
     )
     link = cursor.fetchone()
 
@@ -603,21 +745,24 @@ def vistos(sp, name, cuenta):
     print(link)
 
     return redirect(link, code=302)
-    
 
-#Pasarse datos con el navbar
+
+# Pasarse datos con el navbar
 # Pass Stuff To Navbar
 @app.context_processor
 def base():
-	form = SearchForm()
-	return dict(form=form)
+    form = SearchForm()
+    return dict(form=form)
 
-#Form del buscar
+# Form del buscar
+
+
 class SearchForm(FlaskForm):
-	searched = StringField("Searched", validators=[DataRequired()])
-	submit = SubmitField("Submit")
+    searched = StringField("Searched", validators=[DataRequired()])
+    submit = SubmitField("Submit")
 
-#Funcion de buscar
+# Funcion de buscar
+
 
 @app.route('/search/<name>', methods=["POST"])
 def search(name):
@@ -626,7 +771,7 @@ def search(name):
     #posts = Post.query
     if form.validate_on_submit():
 
-        #Obtener la data enviada
+        # Obtener la data enviada
         post = form.searched.data
 
         search = "%{}%".format(post)
@@ -635,37 +780,36 @@ def search(name):
             'SELECT * FROM perfiles WHERE nombre_perfil = (%s)', (name,))
         perfil = cursor.fetchone()
 
-        #Query a la base de datos
-        #pelicula o serie
+        # Query a la base de datos
+        # pelicula o serie
         cursor.execute(
-            'select serie_pelicula,imagen,link_repro from serie_peliculas where serie_pelicula like %s',(search,))
-        posts= cursor.fetchall()
+            'select serie_pelicula,imagen,link_repro from serie_peliculas where serie_pelicula like %s', (search,))
+        posts = cursor.fetchall()
 
-
-        #director
+        # director
         cursor.execute(
-            'select serie_pelicula,imagen,link_repro from serie_peliculas where director like %s',(search,))
-        director= cursor.fetchall()
+            'select serie_pelicula,imagen,link_repro from serie_peliculas where director like %s', (search,))
+        director = cursor.fetchall()
 
-        #actor
+        # actor
         cursor.execute(
-            'select serie_pelicula,imagen,link_repro from actores where nombre_actor like  %s',(search,))
-        actor= cursor.fetchall()
+            'select serie_pelicula,imagen,link_repro from actores where nombre_actor like  %s', (search,))
+        actor = cursor.fetchall()
 
-        #categoria
-        #director
+        # categoria
+        # director
         cursor.execute(
-            'select serie_pelicula,imagen,link_repro from serie_peliculas where categoria like %s',(search,))
-        categoria= cursor.fetchall()
+            'select serie_pelicula,imagen,link_repro from serie_peliculas where categoria like %s', (search,))
+        categoria = cursor.fetchall()
 
         return render_template("search.html",
-		 form=form,
-		 searched = post,
-		 posts = posts,
-         actores=actor,
-         directores=director,
-         categorias=categoria,
-         perfil=perfil)
+                               form=form,
+                               searched=post,
+                               posts=posts,
+                               actores=actor,
+                               directores=director,
+                               categorias=categoria,
+                               perfil=perfil)
 
 
 @app.route('/logout')

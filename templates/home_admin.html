@@ -38,13 +38,15 @@
     
             <h4>Acciones para Anunciante</h4>
 
-            <a class="btn btn-perfil btn-p2" href="">Agregar Anunciante</a>
+            <a class="btn btn-perfil btn-p2" href="{{ url_for('agregar_anunciante') }}">Agregar Anunciante</a>
 
-            <a class="btn btn-perfil btn-p2" href="">Borrar Anunciante</a>
+            <a class="btn btn-perfil btn-p2" href="{{ url_for('borrar_anunciantes') }}">Borrar Anunciante</a>
 
-            <a class="btn btn-perfil btn-p2" href="">Agregar Anuncios</a>
+            <a class="btn btn-perfil btn-p2" href="{{ url_for('agregar_anuncio') }}">Agregar Anuncios</a>
 
-            <a class="btn btn-perfil btn-p2" href="">Modificar Anuncios</a>
+            <a class="btn btn-perfil btn-p2" href="{{ url_for('modificar_anuncios') }}">Modificar Anuncios</a>
+
+            <a class="btn btn-perfil btn-p2" href="{{ url_for('borrar_anuncios') }}">Borrar Anuncios</a>
 
         </div>
     </div>
