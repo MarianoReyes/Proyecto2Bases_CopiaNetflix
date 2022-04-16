@@ -262,6 +262,7 @@ def homep(name):
 
     cursor.execute('SELECT * FROM cuentas WHERE id = %s', [session['id']])
     account = cursor.fetchone()
+    tipocuenta = account['tipocuenta']
 
     cursor.execute(
         'SELECT * FROM perfiles WHERE nombre_perfil = (%s)', (name,))
@@ -272,8 +273,12 @@ def homep(name):
         'select distinct serie_pelicula,imagen,link_repro from serie_peliculas')
     series_peliculas = cursor.fetchall()
 
+    cursor.execute(
+        'select * from anuncios')
+    anuncios = cursor.fetchall()
+
     # Mandar a pagina de inicio del perfil
-    return render_template('homep.html', account=account, perfil=perfil, series_peliculas=series_peliculas)
+    return render_template('homep.html', account=account, perfil=perfil, series_peliculas=series_peliculas, anuncios=json.dumps(anuncios), tipocuenta=tipocuenta)
 
 
 @app.route('/mylist/<name>')
@@ -499,10 +504,22 @@ def borrar_usuarios():
 @app.route('/borrar_usuario/<usuario>', methods=['GET', 'POST'])
 def borrar_usuario(usuario):
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-
-    # Mando a llamar Peliculas y series
+    cursor.execute(
+        'SELECT email FROM cuentas WHERE username=%s', (usuario,))
+    email = cursor.fetchone()
+    print(email)
+    correo = email['email']
+    # borrar todo a llamar Peliculas y series
     cursor.execute(
         'DELETE FROM cuentas WHERE username=%s', (usuario,))
+    cursor.execute(
+        'DELETE FROM perfiles WHERE email=%s', (correo,))
+    cursor.execute(
+        'DELETE FROM contenido WHERE correo_cuenta=%s', (correo,))
+    cursor.execute(
+        'DELETE FROM favoritos WHERE correo_cuenta=%s', (correo,))
+    cursor.execute(
+        'DELETE FROM sugerencias WHERE correo_cuenta=%s', (correo,))
     conn.commit()
     flash("Usuario desactivado con éxito")
     return render_template('borrar_usuarios.html')

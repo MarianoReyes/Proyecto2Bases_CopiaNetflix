@@ -26,10 +26,22 @@
 
 {% for serie_pelicula in series_peliculas %}
 
-<a target="_blank" href="{{ url_for('vistos', sp=serie_pelicula['serie_pelicula'], name=perfil['nombre_perfil'], cuenta=perfil['email'] )}}"><img src="{{serie_pelicula['imagen'] }}" alt=""></a>
+<a target="_blank" onclick="setInterval(function(){anuncios('{{anuncios|safe}}');}, 5000);" href="{{ url_for('vistos', sp=serie_pelicula['serie_pelicula'], name=perfil['nombre_perfil'], cuenta=perfil['email'] )}}"><img src="{{serie_pelicula['imagen'] }}" alt=""></a>
 <a href="{{ url_for('favoritos', sp=serie_pelicula['serie_pelicula'], name=perfil['nombre_perfil'], cuenta=perfil['email'] ) }}" class="fav" >Agregar a Favoritos</a>
 
 
 {% endfor %}
 
+
+<script>
+    //funcion para desplegar anuncions cada cierto tiempo
+    
+    function anuncios(anuncios){
+        tipocuenta = '{{tipocuenta}}'
+        if(tipocuenta == 'Gratis'){
+            console.log(anuncios.length)  
+        }
+    }
+
+</script>
 {% endblock %}
