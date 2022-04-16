@@ -26,7 +26,7 @@
 
 {% for serie_pelicula in series_peliculas %}
 
-<a href="{{ url_for('vistos', sp=serie_pelicula['serie_pelicula'], name=perfil['nombre_perfil'], cuenta=perfil['email'] )}}"><img src="{{serie_pelicula['imagen'] }}" alt=""></a>
+<a target="_blank" href="{{ url_for('vistos', sp=serie_pelicula['serie_pelicula'], name=perfil['nombre_perfil'], cuenta=perfil['email'] )}}"><img src="{{serie_pelicula['imagen'] }}" alt=""></a>
 <a href="{{ url_for('favoritos', sp=serie_pelicula['serie_pelicula'], name=perfil['nombre_perfil'], cuenta=perfil['email'] ) }}" class="fav" >Agregar a Favoritos</a>
 
 

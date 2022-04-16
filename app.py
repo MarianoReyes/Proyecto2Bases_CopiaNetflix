@@ -598,6 +598,10 @@ def vistos(sp, name, cuenta):
 
     print(link)
 
+    link = link['link_repro']
+
+    print(link)
+
     return redirect(link, code=302)
     
 
