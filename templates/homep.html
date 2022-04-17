@@ -26,6 +26,9 @@
 </header>
 
 <div class="row">
+
+    <h1>Contenido</h1>
+    <p></p>
     {% for serie_pelicula in series_peliculas %}
 
     <div class="serie_pelicula col-lg-2 col-sm-6" style="margin-top: 10px; margin-bottom: 10px;">
@@ -39,7 +42,23 @@
 
 </div>
 
+<div class="row">
 
+    <h1>Recomendaciones</h1>
+    <p> </p>
+
+    {% for recomendacion in recomendaciones %}
+
+    <div class="serie_pelicula col-lg-2 col-sm-6" style="margin-top: 10px; margin-bottom: 10px;">
+        <a target="_blank" onclick="setInterval(anuncio, 5000)" href="{{ url_for('viendo', sp=recomendacion['serie_pelicula'], name=perfil['nombre_perfil'], cuenta=perfil['email'] )}}"><img src="{{recomendacion['imagen'] }}" alt=""></a>
+
+        <a href="{{ url_for('favoritos', sp=recomendacion['serie_pelicula'], name=perfil['nombre_perfil'], cuenta=perfil['email'] ) }}" class="fav" >Agregar a Favoritos</a>
+
+    </div>
+
+    {% endfor %}
+
+</div>
 
 {% for anuncio in anuncios %}
 <p id="links" style="display:none">{{anuncio['link_anuncio']}}</p>

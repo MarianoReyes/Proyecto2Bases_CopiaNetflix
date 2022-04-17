@@ -278,8 +278,13 @@ def homep(name):
         'select * from anuncios')
     anuncios = cursor.fetchall()
 
+    #Buscar contenido similar
+    cursor.execute(
+        'select distinct serie_pelicula,imagen,link_repro from serie_peliculas')
+    recomendaciones = cursor.fetchall()
+
     # Mandar a pagina de inicio del perfil
-    return render_template('homep.html', account=account, perfil=perfil, series_peliculas=series_peliculas, anuncios=anuncios, tipocuenta=tipocuenta)
+    return render_template('homep.html', account=account, perfil=perfil, series_peliculas=series_peliculas, anuncios=anuncios, tipocuenta=tipocuenta, recomendaciones=recomendaciones)
 
 
 @app.route('/mylist/<name>')
