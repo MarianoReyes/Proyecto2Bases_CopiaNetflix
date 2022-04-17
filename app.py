@@ -679,8 +679,20 @@ def favoritos(sp, name, cuenta):
     perfil = cursor.fetchone()
 
     cursor.execute(
+        'select CAST(COUNT(*) AS BIT) FROM favoritos WHERE serie_pelicula  = (%s) and nombre_perfil = (%s)',(sp,name,))
+    contador = cursor.fetchone()
+
+    contador = contador['count']
+
+    if contador == '0':
+        cursor.execute(
         'insert into favoritos (serie_pelicula,nombre_perfil,correo_cuenta) values (%s,%s,%s)', (sp, name, cuenta))
-    conn.commit()
+        conn.commit()
+
+        print('Agregado')
+    else:
+        print('Ya esta agregado')
+
 
     cursor.execute(
         'select * from serie_peliculas sp natural join favoritos f where nombre_perfil = (%s)', (name,))
@@ -736,6 +748,7 @@ def watched(name):
 
 @app.route('/vistos/<name>/<sp>/<cuenta>', methods=['GET', 'POST'])
 def vistos(sp, name, cuenta):
+    
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
     cursor.execute(
@@ -747,25 +760,31 @@ def vistos(sp, name, cuenta):
     perfil = cursor.fetchone()
 
     cursor.execute(
+        'select CAST(COUNT(*) AS BIT) FROM contenido c WHERE serie_pelicula  = (%s) and nombre_perfil = (%s)',(sp,name,))
+    contador = cursor.fetchone()
+
+    contador = contador['count']
+
+    if contador == '0':
+        cursor.execute(
         'insert into contenido (serie_pelicula,nombre_perfil,correo_cuenta) values (%s,%s,%s)', (sp, name, cuenta))
-    conn.commit()
+        conn.commit()
+
+        print('Agregado')
+    else:
+        print('Ya esta agregado')
 
     cursor.execute(
         'select * from serie_peliculas sp natural join contenido c where nombre_perfil = (%s)', (name,))
     serie_pelicula = cursor.fetchall()
 
     cursor.execute(
-        'select link_repro from serie_peliculas sp natural join contenido c where serie_pelicula = (%s) and nombre_perfil = (%s)', (
-            sp, name,)
-    )
+        'select link_repro from serie_peliculas sp natural join contenido c where serie_pelicula = (%s) and nombre_perfil = (%s)', (sp, name,))
     link = cursor.fetchone()
 
-    print(link)
-
     link = link['link_repro']
-
     print(link)
-
+    
     return redirect(link, code=302)
 
 
