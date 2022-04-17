@@ -65,7 +65,7 @@ def home_admin():
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    contador=0
+    contador = 0
 
     # Check if "username" and "password" POST requests exist (user submitted form)
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
@@ -96,14 +96,14 @@ def login():
             else:
                 # Account doesnt exist or username/password incorrect
                 flash('Incorrect username/password')
-                contador+=1
-                mensaje=f"Lleva: {contador} intentos fallidos"
+                contador += 1
+                mensaje = f"Lleva: {contador} intentos fallidos"
                 flash(mensaje)
         else:
             # Account doesnt exist or username/password incorrect
             flash('Incorrect username/password')
-            contador+=1
-            mensaje=f"Lleva: {contador} intentos fallidos"
+            contador += 1
+            mensaje = f"Lleva: {contador} intentos fallidos"
             flash(mensaje)
 
     return render_template('login.html')
@@ -270,7 +270,7 @@ def homep(name):
     cursor.execute('SELECT * FROM cuentas WHERE id = %s', [session['id']])
     account = cursor.fetchone()
     tipocuenta = account['tipocuenta']
-    print(account)
+    email = account['email']
 
     cursor.execute(
         'SELECT * FROM perfiles WHERE nombre_perfil = (%s)', (name,))
@@ -285,13 +285,39 @@ def homep(name):
         'select * from anuncios')
     anuncios = cursor.fetchall()
 
-    #Buscar contenido similar
+    # Buscar contenido similar
     cursor.execute(
         'select distinct serie_pelicula,imagen,link_repro from serie_peliculas')
     recomendaciones = cursor.fetchall()
 
+    # update de perfil a activo
+    cursor.execute(
+        'UPDATE perfiles SET activo = 1 WHERE nombre_perfil = (%s) AND email = (%s)', (name, email))
+    conn.commit()
+
     # Mandar a pagina de inicio del perfil
     return render_template('homep.html', account=account, perfil=perfil, series_peliculas=series_peliculas, anuncios=anuncios, tipocuenta=tipocuenta, recomendaciones=recomendaciones)
+
+
+@app.route('/regresar_home/<name>')
+def regresar_home(name):
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    cursor.execute('SELECT * FROM cuentas WHERE id = %s', [session['id']])
+    account = cursor.fetchone()
+    email = account['email']
+
+    # update de perfil a inactivo
+    cursor.execute(
+        'UPDATE perfiles SET activo = 0 WHERE nombre_perfil = (%s) AND email = (%s)', (name, email))
+    conn.commit()
+
+    cursor.execute('SELECT * FROM perfiles WHERE email = %s',
+                   [account['email']])
+    perfiles = cursor.fetchall()
+
+    # User is loggedin show them the home page
+    return render_template('home.html', username=session['username'], account=account, perfiles=perfiles)
 
 
 @app.route('/mylist/<name>')
@@ -313,10 +339,9 @@ def mylist(name):
         'select * from anuncios')
     anuncios = cursor.fetchall()
 
-
     # Mandar a pagina de inicio del perfil
     # , vistos=vistos
-    return render_template('mylist.html', account=account, perfil=perfil, serie_pelicula=serie_pelicula,anuncios=anuncios)
+    return render_template('mylist.html', account=account, perfil=perfil, serie_pelicula=serie_pelicula, anuncios=anuncios)
 
 
 @app.route('/agregar_pos', methods=['POST', 'GET'])
@@ -696,20 +721,19 @@ def favoritos(sp, name, cuenta):
     perfil = cursor.fetchone()
 
     cursor.execute(
-        'select CAST(COUNT(*) AS BIT) FROM favoritos WHERE serie_pelicula  = (%s) and nombre_perfil = (%s)',(sp,name,))
+        'select CAST(COUNT(*) AS BIT) FROM favoritos WHERE serie_pelicula  = (%s) and nombre_perfil = (%s)', (sp, name,))
     contador = cursor.fetchone()
 
     contador = contador['count']
 
     if contador == '0':
         cursor.execute(
-        'insert into favoritos (serie_pelicula,nombre_perfil,correo_cuenta) values (%s,%s,%s)', (sp, name, cuenta))
+            'insert into favoritos (serie_pelicula,nombre_perfil,correo_cuenta) values (%s,%s,%s)', (sp, name, cuenta))
         conn.commit()
 
         print('Agregado')
     else:
         print('Ya esta agregado')
-
 
     cursor.execute(
         'select * from serie_peliculas sp natural join favoritos f where nombre_perfil = (%s)', (name,))
@@ -719,8 +743,7 @@ def favoritos(sp, name, cuenta):
         'select * from anuncios')
     anuncios = cursor.fetchall()
 
-
-    return render_template('mylist.html', perfil=perfil, serie_pelicula=serie_pelicula,anuncios=anuncios)
+    return render_template('mylist.html', perfil=perfil, serie_pelicula=serie_pelicula, anuncios=anuncios)
 
 
 @app.route('/borrar_favoritos/<sp>/<name>')
@@ -770,7 +793,7 @@ def watched(name):
 
 @app.route('/vistos/<name>/<sp>/<cuenta>', methods=['GET', 'POST'])
 def vistos(sp, name, cuenta):
-    
+
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
     cursor.execute('SELECT * FROM cuentas WHERE id = %s', [session['id']])
@@ -785,19 +808,18 @@ def vistos(sp, name, cuenta):
     anuncios = cursor.fetchall()
 
     cursor.execute(
-        'select CAST(COUNT(*) AS BIT) FROM contenido c WHERE serie_pelicula  = (%s) and nombre_perfil = (%s) and correo_cuenta = (%s)',(sp,name,cuenta,))
+        'select CAST(COUNT(*) AS BIT) FROM contenido c WHERE serie_pelicula  = (%s) and nombre_perfil = (%s) and correo_cuenta = (%s)', (sp, name, cuenta,))
     contador = cursor.fetchone()
 
     contador = contador['count']
-    
 
     if contador == '0':
         cursor.execute(
-        'insert into contenido (serie_pelicula,nombre_perfil,correo_cuenta) values (%s,%s,%s)', (sp, name, cuenta))
+            'insert into contenido (serie_pelicula,nombre_perfil,correo_cuenta) values (%s,%s,%s)', (sp, name, cuenta))
         conn.commit()
 
         cursor.execute(
-        'DELETE FROM viendo WHERE serie_pelicula= (%s)', (sp,))
+            'DELETE FROM viendo WHERE serie_pelicula= (%s)', (sp,))
         conn.commit()
 
         print('Agregado')
@@ -805,7 +827,7 @@ def vistos(sp, name, cuenta):
         print('Ya esta agregado')
 
         cursor.execute(
-        'DELETE FROM viendo WHERE serie_pelicula= (%s)', (sp,))
+            'DELETE FROM viendo WHERE serie_pelicula= (%s)', (sp,))
         conn.commit()
 
     cursor.execute(
@@ -822,12 +844,13 @@ def vistos(sp, name, cuenta):
 
     link = link['link_repro']
     print(link)
-    
+
     return render_template('watched.html', account=account, perfil=perfil, serie_pelicula=serie_pelicula, anuncios=anuncios)
+
 
 @app.route('/viendo/<name>/<sp>/<cuenta>', methods=['GET', 'POST'])
 def viendo(sp, name, cuenta):
-    
+
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
     cursor.execute(
@@ -835,14 +858,14 @@ def viendo(sp, name, cuenta):
     perfil = cursor.fetchone()
 
     cursor.execute(
-        'select CAST(COUNT(*) AS BIT) FROM viendo WHERE serie_pelicula  = (%s) and nombre_perfil = (%s)and cuenta = (%s)',(sp,name,cuenta,))
+        'select CAST(COUNT(*) AS BIT) FROM viendo WHERE serie_pelicula  = (%s) and nombre_perfil = (%s)and cuenta = (%s)', (sp, name, cuenta,))
     contador = cursor.fetchone()
 
     contador = contador['count']
 
     if contador == '0':
         cursor.execute(
-        'insert into viendo (serie_pelicula,nombre_perfil,cuenta) values (%s,%s,%s)', (sp, name, cuenta))
+            'insert into viendo (serie_pelicula,nombre_perfil,cuenta) values (%s,%s,%s)', (sp, name, cuenta))
         conn.commit()
 
         print('Agregado')
@@ -859,8 +882,9 @@ def viendo(sp, name, cuenta):
 
     link = link['link_repro']
     print(link)
-    
+
     return redirect(link, code=302)
+
 
 @app.route('/watching/<name>')
 def watching(name):
@@ -887,6 +911,8 @@ def watching(name):
 
 # Pasarse datos con el navbar
 # Pass Stuff To Navbar
+
+
 @app.context_processor
 def base():
     form = SearchForm()

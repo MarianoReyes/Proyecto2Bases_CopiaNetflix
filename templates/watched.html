@@ -8,10 +8,11 @@
 
 <header>
     <nav class="main-nav">
-        <a href="{{ url_for('homep', name=perfil['nombre_perfil']) }}">Back</a>
-        <a  href="{{ url_for('mylist', name=perfil['nombre_perfil']) }}">My List</a>
-        <a  href="{{ url_for('watched', name=perfil['nombre_perfil']) }}">Watched</a>
-        <a href="{{ url_for('watching', name=perfil['nombre_perfil']) }}">Watching</a>
+        <a class="boton_menu" href="{{ url_for('regresar_home', name=perfil['nombre_perfil']) }}">Salir del Perfil</a>
+        <a class="boton_menu" href="{{ url_for('homep', name=perfil['nombre_perfil']) }}">Contenido</a>
+        <a class="boton_menu" href="{{ url_for('mylist', name=perfil['nombre_perfil']) }}">Favoritos</a>
+        <a class="boton_menu" href="{{ url_for('watched', name=perfil['nombre_perfil']) }}">Vistos</a>
+        <a href="{{ url_for('watching', name=perfil['nombre_perfil']) }}">Viendo</a>
     </nav>   
 </header>
 

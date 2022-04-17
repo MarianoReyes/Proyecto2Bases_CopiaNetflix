@@ -13,22 +13,30 @@
 
 <header>
     <nav class="main-nav">
-        <a href="{{ url_for('home') }}">Back</a>
-        <a  href="{{ url_for('mylist', name=perfil['nombre_perfil']) }}">My List</a>
-        <a  href="{{ url_for('watched', name=perfil['nombre_perfil']) }}">Watched</a>
-        <a href="{{ url_for('watching', name=perfil['nombre_perfil']) }}">Watching</a>
-        <form method="POST" action="{{ url_for('search', name=perfil['nombre_perfil']) }}" class="d-flex">
-            {{ form.hidden_tag() }}
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="searched">
-            <button class="btn btn-outline-secondary" type="submit">Search</button>
-          </form>  
+        <div class="row" style="justify-content: space-between; align-items: center;">
+            <div style="display:flex">
+                <a class="boton_menu" href="{{ url_for('regresar_home', name=perfil['nombre_perfil']) }}">Salir del Perfil</a>
+                <a class="boton_menu" href="{{ url_for('home') }}">Contenido</a>
+                <a class="boton_menu" href="{{ url_for('mylist', name=perfil['nombre_perfil']) }}">Favoritos</a>
+                <a  class="boton_menu"href="{{ url_for('watched', name=perfil['nombre_perfil']) }}">Vistos</a>
+                <a  href="{{ url_for('watching', name=perfil['nombre_perfil']) }}">Viendo</a>
+            </div>
+            <div>
+                <form method="POST" action="{{ url_for('search', name=perfil['nombre_perfil']) }}" class="d-flex">
+                    {{ form.hidden_tag() }}
+                    <input class="form-control me-2" type="search" placeholder="Buscar serie, película, actor, director..." aria-label="Search" name="searched" style="width:600px">
+                    <button class="btn btn-perfil" style="padding: 0!important;margin:0!important;width:200px" type="submit">Buscar</button>
+                </form>  
+            </div>
+        </div>
     </nav>   
 </header>
 
 <div class="row">
-
     <h1>Contenido</h1>
-    <p></p>
+</div>
+<div class="row">
+
     {% for serie_pelicula in series_peliculas %}
 
     <div class="serie_pelicula col-lg-2 col-sm-6" style="margin-top: 10px; margin-bottom: 10px;">
@@ -43,9 +51,9 @@
 </div>
 
 <div class="row">
-
     <h1>Recomendaciones</h1>
-    <p> </p>
+</div>
+<div class="row">
 
     {% for recomendacion in recomendaciones %}
 

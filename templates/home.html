@@ -23,11 +23,18 @@
 
         <div class="col-lg-3 col-sm-6 centrado my-2">
             
-            
+            {% if perfil['activo'] == 0 %}
             <a class="btn btn-perfil btn-p2" href="{{ url_for('homep', name=perfil['nombre_perfil']) }}">
                 {{ perfil['nombre_perfil'] }}
             </a>
-            
+            {% endif %}
+
+            {% if perfil['activo'] == 1 %}
+            <a class="btn btn-perfil btn-p2" style="pointer-events: none" href="{{ url_for('homep', name=perfil['nombre_perfil']) }}">
+                {{ perfil['nombre_perfil'] }} (En uso)
+            </a>
+            {% endif %}
+
         </div>
         {% endfor %}
         {% endif %}

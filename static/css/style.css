@@ -201,3 +201,9 @@ span.input-group-addon i {
   width: 100%;
   height: 150px;
 }
+
+.boton_menu{
+  background-color: transparent;
+  border-right: 1px solid white;
+  padding-right: 4px;
+}
