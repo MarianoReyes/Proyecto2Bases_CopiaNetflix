@@ -65,6 +65,7 @@ def home_admin():
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    contador=0
 
     # Check if "username" and "password" POST requests exist (user submitted form)
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
@@ -95,9 +96,15 @@ def login():
             else:
                 # Account doesnt exist or username/password incorrect
                 flash('Incorrect username/password')
+                contador+=1
+                mensaje=f"Lleva: {contador} intentos fallidos"
+                flash(mensaje)
         else:
             # Account doesnt exist or username/password incorrect
             flash('Incorrect username/password')
+            contador+=1
+            mensaje=f"Lleva: {contador} intentos fallidos"
+            flash(mensaje)
 
     return render_template('login.html')
 
