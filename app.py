@@ -734,7 +734,7 @@ def watched(name):
     perfil = cursor.fetchone()
 
     cursor.execute(
-        'select * from serie_peliculas sp natural join favoritos f where nombre_perfil = (%s)', (name,))
+        'select * from serie_peliculas sp natural join contenido where nombre_perfil = (%s)', (name,))
     serie_pelicula = cursor.fetchall()
 
     cursor.execute(
@@ -751,28 +751,40 @@ def vistos(sp, name, cuenta):
     
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
-    cursor.execute(
-        'SELECT * FROM contenido WHERE nombre_perfil = (%s)', (name,))
-    contenido = cursor.fetchone()
+    cursor.execute('SELECT * FROM cuentas WHERE id = %s', [session['id']])
+    account = cursor.fetchone()
 
     cursor.execute(
         'SELECT * FROM perfiles WHERE nombre_perfil = (%s)', (name,))
     perfil = cursor.fetchone()
 
     cursor.execute(
-        'select CAST(COUNT(*) AS BIT) FROM contenido c WHERE serie_pelicula  = (%s) and nombre_perfil = (%s)',(sp,name,))
+        'select * from anuncios')
+    anuncios = cursor.fetchall()
+
+    cursor.execute(
+        'select CAST(COUNT(*) AS BIT) FROM contenido c WHERE serie_pelicula  = (%s) and nombre_perfil = (%s) and correo_cuenta = (%s)',(sp,name,cuenta,))
     contador = cursor.fetchone()
 
     contador = contador['count']
+    
 
     if contador == '0':
         cursor.execute(
         'insert into contenido (serie_pelicula,nombre_perfil,correo_cuenta) values (%s,%s,%s)', (sp, name, cuenta))
         conn.commit()
 
+        cursor.execute(
+        'DELETE FROM viendo WHERE serie_pelicula= (%s)', (sp,))
+        conn.commit()
+
         print('Agregado')
     else:
         print('Ya esta agregado')
+
+        cursor.execute(
+        'DELETE FROM viendo WHERE serie_pelicula= (%s)', (sp,))
+        conn.commit()
 
     cursor.execute(
         'select * from serie_peliculas sp natural join contenido c where nombre_perfil = (%s)', (name,))
@@ -785,8 +797,63 @@ def vistos(sp, name, cuenta):
     link = link['link_repro']
     print(link)
     
+    return render_template('watched.html', account=account, perfil=perfil, serie_pelicula=serie_pelicula, anuncios=anuncios)
+
+@app.route('/viendo/<name>/<sp>/<cuenta>', methods=['GET', 'POST'])
+def viendo(sp, name, cuenta):
+    
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    cursor.execute(
+        'SELECT * FROM perfiles WHERE nombre_perfil = (%s)', (name,))
+    perfil = cursor.fetchone()
+
+    cursor.execute(
+        'select CAST(COUNT(*) AS BIT) FROM viendo WHERE serie_pelicula  = (%s) and nombre_perfil = (%s)and cuenta = (%s)',(sp,name,cuenta,))
+    contador = cursor.fetchone()
+
+    contador = contador['count']
+
+    if contador == '0':
+        cursor.execute(
+        'insert into viendo (serie_pelicula,nombre_perfil,cuenta) values (%s,%s,%s)', (sp, name, cuenta))
+        conn.commit()
+
+        print('Agregado')
+    else:
+        print('Ya esta agregado')
+
+    cursor.execute(
+        'select * from serie_peliculas sp natural join viendo where nombre_perfil = (%s)', (name,))
+    serie_pelicula = cursor.fetchall()
+
+    cursor.execute(
+        'select link_repro from serie_peliculas sp natural join viendo where serie_pelicula = (%s) and nombre_perfil = (%s)', (sp, name,))
+    link = cursor.fetchone()
+
+    link = link['link_repro']
+    print(link)
+    
     return redirect(link, code=302)
 
+@app.route('/watching/<name>')
+def watching(name):
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    cursor.execute('SELECT * FROM cuentas WHERE id = %s', [session['id']])
+    account = cursor.fetchone()
+
+    cursor.execute(
+        'SELECT * FROM perfiles WHERE nombre_perfil = (%s)', (name,))
+    perfil = cursor.fetchone()
+
+    cursor.execute(
+        'select * from serie_peliculas sp natural join viendo where nombre_perfil = (%s)', (name,))
+    serie_pelicula = cursor.fetchall()
+
+    # Mandar a pagina de inicio del perfil
+    # , vistos=vistos
+    return render_template('viendo.html', account=account, perfil=perfil, serie_pelicula=serie_pelicula)
 
 # Pasarse datos con el navbar
 # Pass Stuff To Navbar

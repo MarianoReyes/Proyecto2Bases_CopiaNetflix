@@ -12,16 +12,16 @@
     <nav class="main-nav">
         <a href="{{ url_for('homep', name=perfil['nombre_perfil']) }}">Back</a>
         <a  href="{{ url_for('mylist', name=perfil['nombre_perfil']) }}">My List</a>
-        <a  href="{{ url_for('watched', name=perfil['nombre_perfil']) }}">Watched</a>
+        <a  href="{{ url_for('watched', sp=serie_pelicula['serie_pelicula'], name=perfil['nombre_perfil'], cuenta=perfil['email']) }}">Watched</a>
         <a href="{{ url_for('watching', name=perfil['nombre_perfil']) }}">Watching</a>
     </nav>   
 </header>
 
 {% for serie_pelicula in serie_pelicula %}
 
-<a target="_blank" onclick="setInterval(anuncio, 360000)" href="{{ url_for('viendo', sp=serie_pelicula['serie_pelicula'], name=perfil['nombre_perfil'], cuenta=perfil['email'] )}}"><img src="{{serie_pelicula['imagen'] }}" alt=""></a>
+<a href="{{serie_pelicula['link_repro'] }}"><img src="{{ serie_pelicula['imagen'] }}" alt=""></a>
 
-<a href="{{ url_for('borrar_favoritos', sp=serie_pelicula['serie_pelicula'], name=perfil['nombre_perfil'] )}}" class="fav">Eliminar de Favoritos</a>
+<a href="{{ url_for('vistos', sp=serie_pelicula['serie_pelicula'], name=perfil['nombre_perfil'], cuenta=perfil['email'] )}}" class="fav">Terminó la serie/pelicula</a>
 
 {% endfor %}
 

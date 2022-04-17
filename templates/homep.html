@@ -16,6 +16,7 @@
         <a href="{{ url_for('home') }}">Back</a>
         <a  href="{{ url_for('mylist', name=perfil['nombre_perfil']) }}">My List</a>
         <a  href="{{ url_for('watched', name=perfil['nombre_perfil']) }}">Watched</a>
+        <a href="{{ url_for('watching', name=perfil['nombre_perfil']) }}">Watching</a>
         <form method="POST" action="{{ url_for('search', name=perfil['nombre_perfil']) }}" class="d-flex">
             {{ form.hidden_tag() }}
             <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="searched">
@@ -26,7 +27,8 @@
 
 {% for serie_pelicula in series_peliculas %}
 
-<a target="_blank" onclick="setInterval(anuncio, 360000)" href="{{ url_for('vistos', sp=serie_pelicula['serie_pelicula'], name=perfil['nombre_perfil'], cuenta=perfil['email'] )}}"><img src="{{serie_pelicula['imagen'] }}" alt=""></a>
+<a target="_blank" onclick="setInterval(anuncio, 360000)" href="{{ url_for('viendo', sp=serie_pelicula['serie_pelicula'], name=perfil['nombre_perfil'], cuenta=perfil['email'] )}}"><img src="{{serie_pelicula['imagen'] }}" alt=""></a>
+
 <a href="{{ url_for('favoritos', sp=serie_pelicula['serie_pelicula'], name=perfil['nombre_perfil'], cuenta=perfil['email'] ) }}" class="fav" >Agregar a Favoritos</a>
 
 
