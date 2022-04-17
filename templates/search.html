@@ -9,7 +9,7 @@
 <header>
     <nav class="main-nav">
         <a class="boton_menu" href="{{ url_for('regresar_home', name=perfil['nombre_perfil']) }}">Salir del Perfil</a>
-		<a class="boton_menu" href="{{ url_for('home') }}">Contenido</a>
+		<a class="boton_menu" href="{{ url_for('homep', name=perfil['nombre_perfil']) }}">Contenido</a>
 		<a class="boton_menu" href="{{ url_for('mylist', name=perfil['nombre_perfil']) }}">Favoritos</a>
 		<a class="boton_menu" href="{{ url_for('watched', name=perfil['nombre_perfil']) }}">Vistos</a>
 		<a href="{{ url_for('watching', name=perfil['nombre_perfil']) }}">Viendo</a>
@@ -21,33 +21,65 @@
 	<h2>Se buscó: <em>{{ searched }}</em></h2>
 	
 	<br/>
+	<div class="row">
+		{% for post in posts %}
+		<div class="serie_pelicula col-lg-2 col-sm-6" style="margin-top: 10px; margin-bottom: 10px;">
+			<a onclick="setInterval(anuncio, 5000)" href="{{post['link_repro'] }}"><img src="{{post['imagen'] }}" alt=""></a>
+		</div>
+		
 
-	{% for post in posts %}
+		{% endfor %}
 
-		<a href="{{post['link_repro'] }}"><img src="{{post['imagen'] }}" alt=""></a>
+		{% for director in directores %}
+		<div class="serie_pelicula col-lg-2 col-sm-6" style="margin-top: 10px; margin-bottom: 10px;">
+			<a onclick="setInterval(anuncio, 5000)" href="{{director['link_repro'] }}"><img src="{{director['imagen'] }}" alt=""></a>
+		</div>
 
-	{% endfor %}
+		{% endfor %}
 
-	{% for director in directores %}
+		{% for actor in actores %}
+		<div class="serie_pelicula col-lg-2 col-sm-6" style="margin-top: 10px; margin-bottom: 10px;">
+			<a onclick="setInterval(anuncio, 5000)" href="{{actor['link_repro'] }}"><img src="{{actor['imagen'] }}" alt=""></a>
+		</div>
+		{% endfor %}
 
-		<a href="{{director['link_repro'] }}"><img src="{{director['imagen'] }}" alt=""></a>
-
-	{% endfor %}
-
-	{% for actor in actores %}
-
-		<a href="{{actor['link_repro'] }}"><img src="{{actor['imagen'] }}" alt=""></a>
-
-	{% endfor %}
-
-	{% for categoria in categorias %}
-
-		<a href="{{categoria['link_repro'] }}"><img src="{{categoria['imagen'] }}" alt=""></a>
-
-	{% endfor %}
+		{% for categoria in categorias %}
+		<div class="serie_pelicula col-lg-2 col-sm-6" style="margin-top: 10px; margin-bottom: 10px;">
+			<a onclick="setInterval(anuncio, 5000)" href="{{categoria['link_repro'] }}"><img src="{{categoria['imagen'] }}" alt=""></a>
+		</div>
+		{% endfor %}
+	</div>
+	
 
 	<br/><br/>
 </div>
 <br/>
+
+{% for anuncio in anuncios %}
+<p id="links" style="display:none">{{anuncio['link_anuncio']}}</p>
+{% endfor %}
+
+<script>
+    var contador=1
+    //funcion para desplegar anuncions cada cierto tiempo
+    function anuncio(){
+        tipocuenta = '{{tipocuenta}}';
+        if (contador<=5){
+            if(tipocuenta == 'Gratis'){
+            anuncios = document.querySelectorAll('[id=links]');
+            numero = Math.random() * (anuncios.length);
+            linkanuncio = anuncios.item(numero)
+            link= linkanuncio.innerHTML;
+            
+            Object.assign(document.createElement('a'), {
+                target: '_blank',
+                href: link,
+            }).click();
+
+            contador = contador + 1;
+            }        
+        }
+    }
+</script>
 
 {% endblock %}

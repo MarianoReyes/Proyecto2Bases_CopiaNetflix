@@ -1,6 +1,6 @@
 # app.py
 from cmath import acos
-from flask import Flask, request, session, redirect, url_for, render_template, flash
+from flask import Flask, g,  request, session, redirect, url_for, render_template, flash
 import psycopg2  # pip install psycopg2
 import psycopg2.extras
 import re
@@ -66,13 +66,12 @@ def home_admin():
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    contador = 0
 
     # Check if "username" and "password" POST requests exist (user submitted form)
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
         username = request.form['username']
         password = request.form['password']
-
+        contador = 0
         # Check if account exists using MySQL
         cursor.execute(
             'SELECT * FROM cuentas WHERE username = %s', (username,))
@@ -363,6 +362,7 @@ def mylist(name):
 
     cursor.execute('SELECT * FROM cuentas WHERE id = %s', [session['id']])
     account = cursor.fetchone()
+    tipocuenta = account['tipocuenta']
 
     cursor.execute(
         'SELECT * FROM perfiles WHERE nombre_perfil = (%s)', (name,))
@@ -378,7 +378,7 @@ def mylist(name):
 
     # Mandar a pagina de inicio del perfil
     # , vistos=vistos
-    return render_template('mylist.html', account=account, perfil=perfil, serie_pelicula=serie_pelicula, anuncios=anuncios)
+    return render_template('mylist.html', account=account, perfil=perfil, serie_pelicula=serie_pelicula, anuncios=anuncios, tipocuenta=tipocuenta)
 
 
 @app.route('/agregar_pos', methods=['POST', 'GET'])
@@ -746,6 +746,10 @@ def favoritos(sp, name, cuenta):
 
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
+    cursor.execute('SELECT * FROM cuentas WHERE id = %s', [session['id']])
+    account = cursor.fetchone()
+    tipocuenta = account['tipocuenta']
+
     cursor.execute(
         'SELECT * FROM favoritos WHERE nombre_perfil = (%s)', (name,))
     favoritos = cursor.fetchone()
@@ -777,7 +781,7 @@ def favoritos(sp, name, cuenta):
         'select * from anuncios')
     anuncios = cursor.fetchall()
 
-    return render_template('mylist.html', perfil=perfil, serie_pelicula=serie_pelicula, anuncios=anuncios)
+    return render_template('mylist.html', perfil=perfil, serie_pelicula=serie_pelicula, anuncios=anuncios, tipocuenta=tipocuenta)
 
 
 @app.route('/borrar_favoritos/<sp>/<name>')
@@ -807,6 +811,7 @@ def watched(name):
 
     cursor.execute('SELECT * FROM cuentas WHERE id = %s', [session['id']])
     account = cursor.fetchone()
+    tipocuenta = account['tipocuenta']
 
     cursor.execute(
         'SELECT * FROM perfiles WHERE nombre_perfil = (%s)', (name,))
@@ -822,7 +827,7 @@ def watched(name):
 
     # Mandar a pagina de inicio del perfil
     # , vistos=vistos
-    return render_template('watched.html', account=account, perfil=perfil, serie_pelicula=serie_pelicula, anuncios=anuncios)
+    return render_template('watched.html', account=account, perfil=perfil, serie_pelicula=serie_pelicula, anuncios=anuncios, tipocuenta=tipocuenta)
 
 
 @app.route('/vistos/<name>/<sp>/<cuenta>', methods=['GET', 'POST'])
@@ -832,6 +837,7 @@ def vistos(sp, name, cuenta):
 
     cursor.execute('SELECT * FROM cuentas WHERE id = %s', [session['id']])
     account = cursor.fetchone()
+    tipocuenta = account['tipocuenta']
 
     cursor.execute(
         'SELECT * FROM perfiles WHERE nombre_perfil = (%s)', (name,))
@@ -879,13 +885,17 @@ def vistos(sp, name, cuenta):
     link = link['link_repro']
     print(link)
 
-    return render_template('watched.html', account=account, perfil=perfil, serie_pelicula=serie_pelicula, anuncios=anuncios)
+    return render_template('watched.html', account=account, perfil=perfil, serie_pelicula=serie_pelicula, anuncios=anuncios, tipocuenta=tipocuenta)
 
 
 @app.route('/viendo/<name>/<sp>/<cuenta>', methods=['GET', 'POST'])
 def viendo(sp, name, cuenta):
 
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    cursor.execute('SELECT * FROM cuentas WHERE id = %s', [session['id']])
+    account = cursor.fetchone()
+    tipocuenta = account['tipocuenta']
 
     cursor.execute(
         'SELECT * FROM perfiles WHERE nombre_perfil = (%s)', (name,))
@@ -915,7 +925,6 @@ def viendo(sp, name, cuenta):
     link = cursor.fetchone()
 
     link = link['link_repro']
-    print(link)
 
     return redirect(link, code=302)
 
@@ -926,6 +935,7 @@ def watching(name):
 
     cursor.execute('SELECT * FROM cuentas WHERE id = %s', [session['id']])
     account = cursor.fetchone()
+    tipocuenta = account['tipocuenta']
 
     cursor.execute(
         'SELECT * FROM perfiles WHERE nombre_perfil = (%s)', (name,))
@@ -941,7 +951,7 @@ def watching(name):
 
     # Mandar a pagina de inicio del perfil
     # , vistos=vistos
-    return render_template('viendo.html', account=account, perfil=perfil, serie_pelicula=serie_pelicula, anuncios=anuncios)
+    return render_template('viendo.html', account=account, perfil=perfil, serie_pelicula=serie_pelicula, anuncios=anuncios, tipocuenta=tipocuenta)
 
 # Pasarse datos con el navbar
 # Pass Stuff To Navbar
@@ -965,7 +975,16 @@ class SearchForm(FlaskForm):
 @app.route('/search/<name>', methods=["POST"])
 def search(name):
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    cursor.execute('SELECT * FROM cuentas WHERE id = %s', [session['id']])
+    account = cursor.fetchone()
+    tipocuenta = account['tipocuenta']
+
     form = SearchForm()
+
+    cursor.execute(
+        'select * from anuncios')
+    anuncios = cursor.fetchall()
     #posts = Post.query
     if form.validate_on_submit():
 
@@ -1007,7 +1026,9 @@ def search(name):
                                actores=actor,
                                directores=director,
                                categorias=categoria,
-                               perfil=perfil)
+                               perfil=perfil,
+                               anuncios=anuncios,
+                               tipocuenta=tipocuenta)
 
 
 @app.route('/logout')
