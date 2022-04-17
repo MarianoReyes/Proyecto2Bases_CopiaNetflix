@@ -9,6 +9,7 @@ import json
 from wtforms import StringField, SubmitField, PasswordField, BooleanField, ValidationError, TextAreaField
 from wtforms.validators import DataRequired, EqualTo, Length
 from flask_wtf import FlaskForm
+import datetime
 
 app = Flask(__name__)
 app.secret_key = 'cairocoders-ednalan'
@@ -122,7 +123,7 @@ def register():
         email = request.form['email']
         tipocuenta = request.form['tipocuenta']
         admin = 0
-        fecha_creacion = '2022-04-14'
+        fecha_creacion = datetime.date.today()
 
         _hashed_password = generate_password_hash(password)
 
@@ -130,7 +131,7 @@ def register():
         cursor.execute(
             'SELECT * FROM cuentas WHERE username = %s', (username,))
         account = cursor.fetchone()
-        print(account)
+
         # If account exists show error and validation checks
         if account:
             flash('La cuenta ya existe!')
@@ -186,12 +187,10 @@ def crear_perfil():
             if request.method == 'POST' and 'nombreperfil' in request.form:
                 nombre_perfil = request.form['nombreperfil']
                 email = account['email']
-                fecha_ingreso = '2022-03-31'
-                hora_ingreso = '05:49'
 
                 # Account doesnt exists and the form data is valid, now insert new account into cuentas table
-                cursor.execute("INSERT INTO perfiles (nombre_perfil, email, fecha_ingreso, hora_ingreso) VALUES (%s,%s,%s,%s)",
-                               (nombre_perfil, email, fecha_ingreso, hora_ingreso))
+                cursor.execute("INSERT INTO perfiles (nombre_perfil, email) VALUES (%s,%s)",
+                               (nombre_perfil, email))
                 conn.commit()
                 flash('Perfil creado con exito')
         else:
@@ -206,12 +205,10 @@ def crear_perfil():
             if request.method == 'POST' and 'nombreperfil' in request.form:
                 nombre_perfil = request.form['nombreperfil']
                 email = account['email']
-                fecha_ingreso = '2022-03-31'
-                hora_ingreso = '05:49'
 
                 # Account doesnt exists and the form data is valid, now insert new account into cuentas table
-                cursor.execute("INSERT INTO perfiles (nombre_perfil, email, fecha_ingreso, hora_ingreso) VALUES (%s,%s,%s,%s)",
-                               (nombre_perfil, email, fecha_ingreso, hora_ingreso))
+                cursor.execute("INSERT INTO perfiles (nombre_perfil, email) VALUES (%s,%s)",
+                               (nombre_perfil, email))
                 conn.commit()
                 flash('Perfil creado con exito')
         else:
@@ -226,12 +223,10 @@ def crear_perfil():
             if request.method == 'POST' and 'nombreperfil' in request.form:
                 nombre_perfil = request.form['nombreperfil']
                 email = account['email']
-                fecha_ingreso = '2022-03-31'
-                hora_ingreso = '05:49'
 
                 # Account doesnt exists and the form data is valid, now insert new account into cuentas table
-                cursor.execute("INSERT INTO perfiles (nombre_perfil, email, fecha_ingreso, hora_ingreso) VALUES (%s,%s,%s,%s)",
-                               (nombre_perfil, email, fecha_ingreso, hora_ingreso))
+                cursor.execute("INSERT INTO perfiles (nombre_perfil, email) VALUES (%s,%s)",
+                               (nombre_perfil, email))
                 conn.commit()
                 flash('Perfil creado con exito')
         else:
@@ -324,6 +319,13 @@ def homep(name):
     cursor.execute(
         'select distinct serie_pelicula,imagen,link_repro from serie_peliculas')
     recomendaciones = cursor.fetchall()
+
+    # ingresar la hora y fech que entro al perfil
+    now = datetime.datetime.now()
+    hora = now.strftime("%H:%M:%S")
+    fecha = datetime.date.today()
+    cursor.execute(
+        'insert into horas_uso(email, nombre_perfil, fecha_ingreso,hora_ingreso) values(%s,%s,%s,%s)', (email, name, fecha, hora))
 
     # update de perfil a activo
     cursor.execute(
