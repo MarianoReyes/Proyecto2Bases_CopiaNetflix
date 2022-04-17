@@ -263,6 +263,7 @@ def homep(name):
     cursor.execute('SELECT * FROM cuentas WHERE id = %s', [session['id']])
     account = cursor.fetchone()
     tipocuenta = account['tipocuenta']
+    print(account)
 
     cursor.execute(
         'SELECT * FROM perfiles WHERE nombre_perfil = (%s)', (name,))
@@ -278,7 +279,7 @@ def homep(name):
     anuncios = cursor.fetchall()
 
     # Mandar a pagina de inicio del perfil
-    return render_template('homep.html', account=account, perfil=perfil, series_peliculas=series_peliculas, anuncios=json.dumps(anuncios), tipocuenta=tipocuenta)
+    return render_template('homep.html', account=account, perfil=perfil, series_peliculas=series_peliculas, anuncios=anuncios, tipocuenta=tipocuenta)
 
 
 @app.route('/mylist/<name>')
@@ -724,9 +725,13 @@ def watched(name):
         'select * from serie_peliculas sp natural join favoritos f where nombre_perfil = (%s)', (name,))
     serie_pelicula = cursor.fetchall()
 
+    cursor.execute(
+        'select * from anuncios')
+    anuncios = cursor.fetchall()
+
     # Mandar a pagina de inicio del perfil
     # , vistos=vistos
-    return render_template('watched.html', account=account, perfil=perfil, serie_pelicula=serie_pelicula)
+    return render_template('watched.html', account=account, perfil=perfil, serie_pelicula=serie_pelicula, anuncios=anuncios)
 
 
 @app.route('/vistos/<name>/<sp>/<cuenta>', methods=['GET', 'POST'])

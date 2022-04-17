@@ -16,8 +16,38 @@
 
 {% for serie_pelicula in serie_pelicula %}
 
-<a href="{{serie_pelicula['link_repro'] }}"><img src="{{ serie_pelicula['imagen'] }}" alt=""></a>
+<a href="{{serie_pelicula['link_repro'] }}" onclick="setInterval(anuncio, 1000)" target="_blank"><img src="{{ serie_pelicula['imagen'] }}" alt=""></a>
 
 {% endfor %}
+
+
+
+
+{% for anuncio in anuncios %}
+<p id="links" style="display:none">{{anuncio['link_anuncio']}}</p>
+{% endfor %}
+
+<script>
+    var contador=1
+    //funcion para desplegar anuncions cada cierto tiempo
+    function anuncio(){
+        tipocuenta = '{{tipocuenta}}';
+        if (contador<=5){
+            if(tipocuenta == 'Gratis'){
+            anuncios = document.querySelectorAll('[id=links]');
+            numero = Math.random() * (anuncios.length);
+            linkanuncio = anuncios.item(numero)
+            link= linkanuncio.innerHTML;
+            
+            Object.assign(document.createElement('a'), {
+                target: '_blank',
+                href: link,
+            }).click();
+
+            contador = contador + 1;
+            }        
+        }
+    }
+</script>
 
 {% endblock %}
