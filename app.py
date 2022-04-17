@@ -316,7 +316,7 @@ def homep(name):
 
     # Buscar contenido similar
     cursor.execute(
-        'select distinct serie_pelicula,imagen,link_repro from serie_peliculas')
+        'select * from serie_peliculas s where categoria = (select s.categoria from contenido c natural join serie_peliculas s where c.nombre_perfil = %s and c.correo_cuenta = %s order by id desc limit 1)', (name,email,))
     recomendaciones = cursor.fetchall()
 
     # ingresar la hora y fech que entro al perfil
