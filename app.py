@@ -495,28 +495,26 @@ def borrar_pos():
 
     # Mando a llamar Peliculas y series
     cursor.execute(
-        'select distinct serie_pelicula,imagen,link_repro from serie_peliculas')
+        'select *  from serie_peliculas')
     series_peliculas = cursor.fetchall()
 
-    if request.method == 'POST' and 'nombrepos' in request.form:
-
-        nombrepos = request.form['nombrepos']
-        # se comprueba si existe la serie/pelicula
-        cursor.execute(
-            'SELECT * FROM serie_peliculas WHERE serie_pelicula = %s', (nombrepos,))
-        seriepelicula = cursor.fetchone()
-
-        if seriepelicula:
-            cursor.execute(
-                "DELETE FROM serie_peliculas WHERE serie_pelicula = %s", (nombrepos,))
-            cursor.execute(
-                "DELETE FROM actores WHERE serie_pelicula = %s", (nombrepos,))
-            conn.commit()
-            flash('Serie / Película borrada con exito')
-        else:
-            flash('Serie / Película no existente')
-
     # Mandar a pagina para borrar series o peliculas
+    return render_template('borrar_pos.html', series_peliculas=series_peliculas)
+
+
+@app.route('/borrar_ps/<name>/', methods=['GET', 'POST'])
+def borrar_ps(name):
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cursor.execute(
+        'DELETE FROM serie_peliculas WHERE serie_pelicula=%s', (name,))
+    conn.commit()
+    flash("Serie o Pelicula borrada con éxito")
+
+    # Mando a llamar Peliculas y series
+    # Mando a llamar Peliculas y series
+    cursor.execute(
+        'select *  from serie_peliculas')
+    series_peliculas = cursor.fetchall()
     return render_template('borrar_pos.html', series_peliculas=series_peliculas)
 
 
