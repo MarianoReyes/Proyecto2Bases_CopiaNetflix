@@ -241,6 +241,41 @@ def crear_perfil():
     return render_template('crear_perfil.html', username=session['username'])
 
 
+@app.route('/borrar_perfiles/<email>', methods=['GET', 'POST'])
+def borrar_perfiles(email):
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    # Mando a llamar Peliculas y series
+    cursor.execute(
+        'select *  from perfiles where email = %s', (email,))
+    perfiles = cursor.fetchall()
+
+    cursor.execute(
+        'select *  from cuentas where email = %s', (email,))
+    account = cursor.fetchone()
+    email = account['email']
+    return render_template('borrar_perfiles.html', perfiles=perfiles, email=email)
+
+
+@app.route('/borrar_perfil/<email>/<name>/', methods=['GET', 'POST'])
+def borrar_perfil(name, email):
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cursor.execute(
+        'DELETE FROM perfiles WHERE email=%s and nombre_perfil=%s', (email, name))
+    conn.commit()
+    flash("Perfil borrado con éxito")
+
+    # Mando a llamar Peliculas y series
+    cursor.execute(
+        'select *  from perfiles where email = %s', (email,))
+    perfiles = cursor.fetchall()
+
+    cursor.execute(
+        'select *  from cuentas where email = %s', (email,))
+    account = cursor.fetchall()
+    return render_template('borrar_perfiles.html', perfiles=perfiles, account=account)
+
+
 @app.route('/cambiocuenta', methods=['GET', 'POST'])
 def cambiocuenta():
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
@@ -550,7 +585,6 @@ def borrar_usuario(usuario):
     cursor.execute(
         'SELECT email FROM cuentas WHERE username=%s', (usuario,))
     email = cursor.fetchone()
-    print(email)
     correo = email['email']
     # borrar todo a llamar Peliculas y series
     cursor.execute(
