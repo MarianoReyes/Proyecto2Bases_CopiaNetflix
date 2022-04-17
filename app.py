@@ -71,7 +71,7 @@ def login():
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
         username = request.form['username']
         password = request.form['password']
-        contador = 0
+
         # Check if account exists using MySQL
         cursor.execute(
             'SELECT * FROM cuentas WHERE username = %s', (username,))
@@ -87,6 +87,10 @@ def login():
                 session['id'] = account['id']
                 session['username'] = account['username']
 
+                #Borra los intentos con ese nombre de usuario
+                cursor.execute("TRUNCATE TABLE intentos")
+                conn.commit()
+
                 if account['admin'] == 1:
                     return redirect(url_for('home_admin'))
                 else:
@@ -96,13 +100,27 @@ def login():
             else:
                 # Account doesnt exist or username/password incorrect
                 flash('Incorrect username/password')
-                contador += 1
+                #Inserta el intento fallido
+                cursor.execute("INSERT INTO intentos (usuario, fallos) VALUES (%s,%s)", ('usuario1','1'))
+                conn.commit()
+                #cuenta cuantos intentos fallidos van
+                cursor.execute(
+                    'select count(*) from intentos where usuario =%s ',('usuario1',))
+                contador = cursor.fetchone()
+                #Muestra el mensaje
                 mensaje = f"Lleva: {contador} intentos fallidos"
                 flash(mensaje)
         else:
             # Account doesnt exist or username/password incorrect
             flash('Incorrect username/password')
-            contador += 1
+            #Inserta el intento fallido
+            cursor.execute("INSERT INTO intentos (usuario, fallos) VALUES (%s,%s)", ('usuario1','1'))
+            conn.commit()
+            #cuenta cuantos intentos fallidos van
+            cursor.execute(
+                'select count(*) from intentos where usuario =%s ',('usuario1',))
+            contador = cursor.fetchone()
+            #Muestra el mensaje
             mensaje = f"Lleva: {contador} intentos fallidos"
             flash(mensaje)
 
