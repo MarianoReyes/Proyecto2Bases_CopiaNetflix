@@ -17,12 +17,46 @@
     </nav>   
 </header>
 
-{% for serie_pelicula in serie_pelicula %}
+<div class="row">
 
-<a target="_blank" onclick="setInterval(anuncio, 360000)" href="{{ url_for('viendo', sp=serie_pelicula['serie_pelicula'], name=perfil['nombre_perfil'], cuenta=perfil['email'] )}}"><img src="{{serie_pelicula['imagen'] }}" alt=""></a>
+    {% for serie_pelicula in serie_pelicula %}
 
-<a href="{{ url_for('borrar_favoritos', sp=serie_pelicula['serie_pelicula'], name=perfil['nombre_perfil'] )}}" class="fav">Eliminar de Favoritos</a>
+    <div class="serie_pelicula col-lg-2 col-sm-6" style="margin-top: 10px; margin-bottom: 10px;">
 
+        <a target="_blank" onclick="setInterval(anuncio, 5000)" href="{{ url_for('viendo', sp=serie_pelicula['serie_pelicula'], name=perfil['nombre_perfil'], cuenta=perfil['email'] )}}"><img src="{{serie_pelicula['imagen'] }}" alt=""></a>
+
+        <a href="{{ url_for('borrar_favoritos', sp=serie_pelicula['serie_pelicula'], name=perfil['nombre_perfil'] )}}" class="fav">Eliminar de Favoritos</a>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+{% for anuncio in anuncios %}
+<p id="links" style="display:none">{{anuncio['link_anuncio']}}</p>
 {% endfor %}
 
+<script>
+    var contador=1
+    //funcion para desplegar anuncions cada cierto tiempo
+    function anuncio(){
+        tipocuenta = '{{tipocuenta}}';
+        if (contador<=5){
+            if(tipocuenta == 'Gratis'){
+            anuncios = document.querySelectorAll('[id=links]');
+            numero = Math.random() * (anuncios.length);
+            linkanuncio = anuncios.item(numero)
+            link= linkanuncio.innerHTML;
+            
+            Object.assign(document.createElement('a'), {
+                target: '_blank',
+                href: link,
+            }).click();
+
+            contador = contador + 1;
+            }        
+        }
+    }
+</script>
 {% endblock %}

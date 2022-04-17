@@ -15,13 +15,18 @@
     </nav>   
 </header>
 
-{% for serie_pelicula in serie_pelicula %}
 
-<a href="{{serie_pelicula['link_repro'] }}" onclick="setInterval(anuncio, 1000)" target="_blank"><img src="{{ serie_pelicula['imagen'] }}" alt=""></a>
+<div class="row">
+{% for serie_pelicula in serie_pelicula %}
+    <div class="serie_pelicula col-lg-2 col-sm-6" style="margin-top: 10px; margin-bottom: 10px;">
+
+    <a href="{{serie_pelicula['link_repro'] }}" onclick="setInterval(anuncio, 5000)" target="_blank"><img src="{{ serie_pelicula['imagen'] }}" alt=""></a>
+
+    </div>
 
 {% endfor %}
 
-
+</div>
 
 
 {% for anuncio in anuncios %}

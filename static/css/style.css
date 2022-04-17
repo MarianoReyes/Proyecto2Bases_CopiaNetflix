@@ -192,3 +192,12 @@ span.input-group-addon i {
 .link_normal:hover{
   color: #7545b4;
 }
+
+.serie_pelicula{
+  display: block;
+  
+}
+.serie_pelicula a img{
+  width: 100%;
+  height: 150px;
+}

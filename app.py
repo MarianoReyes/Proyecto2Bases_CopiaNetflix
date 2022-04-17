@@ -297,9 +297,14 @@ def mylist(name):
         'select * from serie_peliculas sp natural join favoritos f where nombre_perfil = (%s)', (name,))
     serie_pelicula = cursor.fetchall()
 
+    cursor.execute(
+        'select * from anuncios')
+    anuncios = cursor.fetchall()
+
+
     # Mandar a pagina de inicio del perfil
     # , vistos=vistos
-    return render_template('mylist.html', account=account, perfil=perfil, serie_pelicula=serie_pelicula)
+    return render_template('mylist.html', account=account, perfil=perfil, serie_pelicula=serie_pelicula,anuncios=anuncios)
 
 
 @app.route('/agregar_pos', methods=['POST', 'GET'])
@@ -698,7 +703,12 @@ def favoritos(sp, name, cuenta):
         'select * from serie_peliculas sp natural join favoritos f where nombre_perfil = (%s)', (name,))
     serie_pelicula = cursor.fetchall()
 
-    return render_template('mylist.html', perfil=perfil, serie_pelicula=serie_pelicula)
+    cursor.execute(
+        'select * from anuncios')
+    anuncios = cursor.fetchall()
+
+
+    return render_template('mylist.html', perfil=perfil, serie_pelicula=serie_pelicula,anuncios=anuncios)
 
 
 @app.route('/borrar_favoritos/<sp>/<name>')
@@ -794,6 +804,10 @@ def vistos(sp, name, cuenta):
         'select link_repro from serie_peliculas sp natural join contenido c where serie_pelicula = (%s) and nombre_perfil = (%s)', (sp, name,))
     link = cursor.fetchone()
 
+    cursor.execute(
+        'select * from anuncios')
+    anuncios = cursor.fetchall()
+
     link = link['link_repro']
     print(link)
     
@@ -851,9 +865,13 @@ def watching(name):
         'select * from serie_peliculas sp natural join viendo where nombre_perfil = (%s)', (name,))
     serie_pelicula = cursor.fetchall()
 
+    cursor.execute(
+        'select * from anuncios')
+    anuncios = cursor.fetchall()
+
     # Mandar a pagina de inicio del perfil
     # , vistos=vistos
-    return render_template('viendo.html', account=account, perfil=perfil, serie_pelicula=serie_pelicula)
+    return render_template('viendo.html', account=account, perfil=perfil, serie_pelicula=serie_pelicula, anuncios=anuncios)
 
 # Pasarse datos con el navbar
 # Pass Stuff To Navbar
@@ -901,7 +919,7 @@ def search(name):
 
         # actor
         cursor.execute(
-            'select serie_pelicula,imagen,link_repro from actores where nombre_actor like  %s', (search,))
+            'select serie_pelicula,imagen,link_repro from actores natural join serie_peliculas where nombre_actor like  %s', (search,))
         actor = cursor.fetchall()
 
         # categoria

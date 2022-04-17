@@ -25,14 +25,20 @@
     </nav>   
 </header>
 
-{% for serie_pelicula in series_peliculas %}
+<div class="row">
+    {% for serie_pelicula in series_peliculas %}
 
-<a target="_blank" onclick="setInterval(anuncio, 360000)" href="{{ url_for('viendo', sp=serie_pelicula['serie_pelicula'], name=perfil['nombre_perfil'], cuenta=perfil['email'] )}}"><img src="{{serie_pelicula['imagen'] }}" alt=""></a>
+    <div class="serie_pelicula col-lg-2 col-sm-6" style="margin-top: 10px; margin-bottom: 10px;">
+        <a target="_blank" onclick="setInterval(anuncio, 5000)" href="{{ url_for('viendo', sp=serie_pelicula['serie_pelicula'], name=perfil['nombre_perfil'], cuenta=perfil['email'] )}}"><img src="{{serie_pelicula['imagen'] }}" alt=""></a>
 
-<a href="{{ url_for('favoritos', sp=serie_pelicula['serie_pelicula'], name=perfil['nombre_perfil'], cuenta=perfil['email'] ) }}" class="fav" >Agregar a Favoritos</a>
+        <a href="{{ url_for('favoritos', sp=serie_pelicula['serie_pelicula'], name=perfil['nombre_perfil'], cuenta=perfil['email'] ) }}" class="fav" >Agregar a Favoritos</a>
 
+    </div>
 
-{% endfor %}
+    {% endfor %}
+
+</div>
+
 
 
 {% for anuncio in anuncios %}
