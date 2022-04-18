@@ -5,7 +5,6 @@ from flask import Flask, g,  request, session, redirect, url_for, render_templat
 import psycopg2  # pip install psycopg2
 import psycopg2.extras
 import re
-from sympy import C
 from werkzeug.security import generate_password_hash, check_password_hash
 import json
 from wtforms import StringField, SubmitField, PasswordField, BooleanField, ValidationError, TextAreaField
@@ -104,7 +103,7 @@ def login():
                 flash('Incorrect username/password')
                 # Inserta el intento fallido
                 cursor.execute(
-                    "INSERT INTO intentos (usuario, fallos) VALUES (%s,%s)", ('usuario1', '1'))
+                    "INSERT INTO intentos (usuario, fallos) VALUES (%s,%s)", ('usuario1', '1',))
                 conn.commit()
                 # cuenta cuantos intentos fallidos van
                 cursor.execute(
@@ -116,16 +115,14 @@ def login():
                 contadort=contador['count']
                 if contadort >= 5 :
                     return render_template('intentos.html')
-                #Borra los intentos con ese nombre de usuario
-                cursor.execute("TRUNCATE TABLE intentos")
-                conn.commit()
-
+                
+                
         else:
             # Account doesnt exist or username/password incorrect
             flash('Incorrect username/password')
             # Inserta el intento fallido
             cursor.execute(
-                "INSERT INTO intentos (usuario, fallos) VALUES (%s,%s)", ('usuario1', '1'))
+                "INSERT INTO intentos (usuario, fallos) VALUES (%s,%s)", ('usuario1', '1',))
             conn.commit()
             # cuenta cuantos intentos fallidos van
             cursor.execute(
@@ -137,10 +134,7 @@ def login():
             contadort=contador['count']
             if contadort >= 5 :
                 return render_template('intentos.html')
-            #Borra los intentos con ese nombre de usuario
-            cursor.execute("TRUNCATE TABLE intentos")
-            conn.commit()
-
+                      
     return render_template('login.html')
 
 
