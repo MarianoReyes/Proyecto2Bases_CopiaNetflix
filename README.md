@@ -1,7 +1,7 @@
 # Proyecto2Bases_CopiaNetflix
-# Jose Mariano Reyes 20074
-# Andrea Lam 20102
-# Esteban Aldana 20591
+Jose Mariano Reyes 20074
+Andrea Lam 20102
+Esteban Aldana 20591
 
 
 Pasos para correr programa
