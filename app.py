@@ -4,6 +4,7 @@ from flask import Flask, g,  request, session, redirect, url_for, render_templat
 import psycopg2  # pip install psycopg2
 import psycopg2.extras
 import re
+from sympy import C
 from werkzeug.security import generate_password_hash, check_password_hash
 import json
 from wtforms import StringField, SubmitField, PasswordField, BooleanField, ValidationError, TextAreaField
@@ -87,7 +88,7 @@ def login():
                 session['id'] = account['id']
                 session['username'] = account['username']
 
-                #Borra los intentos con ese nombre de usuario
+                # Borra los intentos con ese nombre de usuario
                 cursor.execute("TRUNCATE TABLE intentos")
                 conn.commit()
 
@@ -100,27 +101,29 @@ def login():
             else:
                 # Account doesnt exist or username/password incorrect
                 flash('Incorrect username/password')
-                #Inserta el intento fallido
-                cursor.execute("INSERT INTO intentos (usuario, fallos) VALUES (%s,%s)", ('usuario1','1'))
-                conn.commit()
-                #cuenta cuantos intentos fallidos van
+                # Inserta el intento fallido
                 cursor.execute(
-                    'select count(*) from intentos where usuario =%s ',('usuario1',))
+                    "INSERT INTO intentos (usuario, fallos) VALUES (%s,%s)", ('usuario1', '1'))
+                conn.commit()
+                # cuenta cuantos intentos fallidos van
+                cursor.execute(
+                    'select count(*) from intentos where usuario =%s ', ('usuario1',))
                 contador = cursor.fetchone()
-                #Muestra el mensaje
+                # Muestra el mensaje
                 mensaje = f"Lleva: {contador} intentos fallidos"
                 flash(mensaje)
         else:
             # Account doesnt exist or username/password incorrect
             flash('Incorrect username/password')
-            #Inserta el intento fallido
-            cursor.execute("INSERT INTO intentos (usuario, fallos) VALUES (%s,%s)", ('usuario1','1'))
-            conn.commit()
-            #cuenta cuantos intentos fallidos van
+            # Inserta el intento fallido
             cursor.execute(
-                'select count(*) from intentos where usuario =%s ',('usuario1',))
+                "INSERT INTO intentos (usuario, fallos) VALUES (%s,%s)", ('usuario1', '1'))
+            conn.commit()
+            # cuenta cuantos intentos fallidos van
+            cursor.execute(
+                'select count(*) from intentos where usuario =%s ', ('usuario1',))
             contador = cursor.fetchone()
-            #Muestra el mensaje
+            # Muestra el mensaje
             mensaje = f"Lleva: {contador} intentos fallidos"
             flash(mensaje)
 
@@ -334,7 +337,7 @@ def homep(name):
 
     # Buscar contenido similar
     cursor.execute(
-        'select * from serie_peliculas s where categoria = (select s.categoria from contenido c natural join serie_peliculas s where c.nombre_perfil = %s and c.correo_cuenta = %s order by id desc limit 1)', (name,email,))
+        'select * from serie_peliculas s where categoria = (select s.categoria from contenido c natural join serie_peliculas s where c.nombre_perfil = %s and c.correo_cuenta = %s order by id desc limit 1)', (name, email,))
     recomendaciones = cursor.fetchall()
 
     # ingresar la hora y fech que entro al perfil
@@ -871,9 +874,11 @@ def vistos(sp, name, cuenta):
 
     contador = contador['count']
 
+    fecha_terminado = datetime.date.today()
+
     if contador == '0':
         cursor.execute(
-            'insert into contenido (serie_pelicula,nombre_perfil,correo_cuenta) values (%s,%s,%s)', (sp, name, cuenta))
+            'insert into contenido (serie_pelicula,nombre_perfil,correo_cuenta,fecha_terminado) values (%s,%s,%s,%s)', (sp, name, cuenta, fecha_terminado))
         conn.commit()
 
         cursor.execute(
@@ -1037,16 +1042,92 @@ def search(name):
             'select serie_pelicula,imagen,link_repro from serie_peliculas where categoria like %s', (search,))
         categoria = cursor.fetchall()
 
-        return render_template("search.html",
-                               form=form,
-                               searched=post,
-                               posts=posts,
-                               actores=actor,
-                               directores=director,
-                               categorias=categoria,
-                               perfil=perfil,
-                               anuncios=anuncios,
-                               tipocuenta=tipocuenta)
+        return render_template("search.html", form=form, searched=post, posts=posts, actores=actor, directores=director, categorias=categoria, perfil=perfil, anuncios=anuncios, tipocuenta=tipocuenta)
+
+
+@app.route('/prequery1/', methods=["POST", "GET"])
+def prequery1():
+    return render_template("prequery1.html")
+
+
+@app.route('/query1/', methods=["POST", "GET"])
+def query1():
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    fecha1 = request.form['fechain']
+    fecha2 = request.form['fechafi']
+    # top generos vistos en rango de fechas
+    cursor.execute('select serie_peliculas.categoria as categoria, count(*) as cantidad_por_genero from contenido natural join serie_peliculas where fecha_terminado between %s and %s group by serie_peliculas.categoria order by cantidad_por_genero  desc limit 10', (fecha1, fecha2))
+    categorias = cursor.fetchall()
+    # minutos consumidos
+    cursor.execute('select sum(duracion) as total_mins_consumidos from contenido natural join serie_peliculas where fecha_terminado between %s and %s', (fecha1, fecha2))
+    minutos = cursor.fetchone()
+    return render_template("query1.html", categorias=categorias, minutos=minutos)
+
+
+@app.route('/prequery2/', methods=["POST", "GET"])
+def prequery2():
+    return render_template("prequery2.html")
+
+
+@app.route('/query2/', methods=["POST", "GET"])
+def query2():
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    fecha1 = request.form['fechain']
+    fecha2 = request.form['fechafi']
+    # top generos vistos en rango de fechas por tipo de cuenta
+    cursor.execute('select serie_peliculas.categoria as categoria, count(*) as cantidad_por_categoria from contenido join cuentas on cuentas.email = contenido.correo_cuenta natural join serie_peliculas where tipocuenta = %s and fecha_terminado between %s and %s group by serie_peliculas.categoria order by cantidad_por_categoria desc limit 10', ('Gratis', fecha1, fecha2))
+    gratis = cursor.fetchall()
+    cursor.execute('select serie_peliculas.categoria as categoria, count(*) as cantidad_por_categoria from contenido join cuentas on cuentas.email = contenido.correo_cuenta natural join serie_peliculas where tipocuenta = %s and fecha_terminado between %s and %s group by serie_peliculas.categoria order by cantidad_por_categoria desc limit 10', ('Standard', fecha1, fecha2))
+    standard = cursor.fetchall()
+    cursor.execute('select serie_peliculas.categoria as categoria, count(*) as cantidad_por_categoria from contenido join cuentas on cuentas.email = contenido.correo_cuenta natural join serie_peliculas where tipocuenta = %s and fecha_terminado between %s and %s group by serie_peliculas.categoria order by cantidad_por_categoria desc limit 10', ('Premium', fecha1, fecha2))
+    premium = cursor.fetchall()
+    return render_template("query2.html", gratis=gratis, standard=standard, premium=premium)
+
+
+@app.route('/query3/', methods=["POST", "GET"])
+def query3():
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    # top 10 directores
+    cursor.execute(
+        'select actores.nombre_actor as nombre_actor, count(serie_peliculas.serie_pelicula) as conteo_apariciones from contenido join cuentas on cuentas.email = contenido.correo_cuenta natural join serie_peliculas inner join actores on serie_peliculas.serie_pelicula = actores.serie_pelicula where cuentas.tipocuenta = %s or cuentas.tipocuenta = %s group by actores.nombre_actor, serie_peliculas.serie_pelicula order by conteo_apariciones desc limit 10', ('Standard', 'Premium'))
+    actores = cursor.fetchall()
+    # top 10 actores
+    cursor.execute(
+        'select serie_peliculas.director as nombre_director, count(serie_peliculas.serie_pelicula) as conteo_apariciones from contenido join cuentas on cuentas.email = contenido.correo_cuenta natural join serie_peliculas where cuentas.tipocuenta = %s or cuentas.tipocuenta = %s group by serie_peliculas.director, serie_peliculas.serie_pelicula order by conteo_apariciones desc limit 10', ('Standard', 'Premium'))
+    directores = cursor.fetchall()
+    return render_template("query3.html", directores=directores, actores=actores)
+
+
+@app.route('/query4/', methods=["POST", "GET"])
+def query4():
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    # total de cuentas avanzadas creadas en 6 meses anteriores
+    cursor.execute(
+        'select * from cuentas where tipocuenta = %s and fecha_creacion >= (current_date - INTERVAL %s)', ('Premium', '6 months'))
+    resultados = cursor.fetchall()
+    # conteo de cuentas avanzaas creadas en 6 meses anteriores
+    cursor.execute(
+        'select count(*) from cuentas where tipocuenta = %s and fecha_creacion >= (current_date - INTERVAL %s)', ('Premium', '6 months'))
+    conteo = cursor.fetchone()
+    return render_template("query4.html", resultados=resultados, conteo=conteo)
+
+
+@app.route('/prequery5/', methods=["POST", "GET"])
+def prequery5():
+    return render_template("prequery5.html")
+
+
+@app.route('/query5/', methods=["POST", "GET"])
+def query5():
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    fecha = request.form['fecha']
+    # ultimo query
+    cursor.execute(
+        'select extract(hour from hora_ingreso) as hora,count(extract(hour from hora_ingreso)) as repeticiones_hora  from horas_uso hu where fecha_ingreso = %s group by extract(hour from hora_ingreso) order by repeticiones_hora desc limit 1', (fecha,))
+    resultados = cursor.fetchone()
+    hora_pico = resultados['hora']
+    repeticiones_hora = resultados['repeticiones_hora']
+    return render_template("query5.html", hora_pico=hora_pico, repeticiones_hora=repeticiones_hora, fecha=fecha)
 
 
 @app.route('/logout')

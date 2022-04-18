@@ -207,3 +207,17 @@ span.input-group-addon i {
   border-right: 1px solid white;
   padding-right: 4px;
 }
+
+.table{
+  border: 1px solid #fff;
+  width: auto;
+  font-size: 10px;
+}
+
+.table tr th{
+  border: 1px solid #fff;
+}
+
+.table tr td{
+  border: 1px solid #fff;
+}
