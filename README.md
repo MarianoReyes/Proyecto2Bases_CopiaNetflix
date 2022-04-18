@@ -1,5 +1,5 @@
 # Proyecto2Bases_CopiaNetflix
-## Jose Mariano Reyes 20074
+## Mariano Reyes 20074
 ## Andrea Lam 20102
 ## Esteban Aldana 20591
 
