@@ -208,16 +208,23 @@ span.input-group-addon i {
   padding-right: 4px;
 }
 
-.table{
-  border: 1px solid #fff;
-  width: auto;
-  font-size: 10px;
+.titulo{
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  font-size: 35px;
+  color:white;
+  position:relative; 
+  top:100px; 
+  left:100px
 }
 
-.table tr th{
-  border: 1px solid #fff;
-}
+.otro{
+  font-family: "Montserrat", sans-serif;
+  font-weight: 300;
+  font-size: 25px;
+  color:white;
+  position:relative; 
+  top:100px; 
+  left:100px
 
-.table tr td{
-  border: 1px solid #fff;
 }

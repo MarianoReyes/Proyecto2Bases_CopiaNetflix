@@ -1,5 +1,6 @@
 # app.py
 from cmath import acos
+from itertools import count
 from flask import Flask, g,  request, session, redirect, url_for, render_template, flash
 import psycopg2  # pip install psycopg2
 import psycopg2.extras
@@ -112,6 +113,13 @@ def login():
                 # Muestra el mensaje
                 mensaje = f"Lleva: {contador} intentos fallidos"
                 flash(mensaje)
+                contadort=contador['count']
+                if contadort >= 5 :
+                    return render_template('intentos.html')
+                #Borra los intentos con ese nombre de usuario
+                cursor.execute("TRUNCATE TABLE intentos")
+                conn.commit()
+
         else:
             # Account doesnt exist or username/password incorrect
             flash('Incorrect username/password')
@@ -126,6 +134,12 @@ def login():
             # Muestra el mensaje
             mensaje = f"Lleva: {contador} intentos fallidos"
             flash(mensaje)
+            contadort=contador['count']
+            if contadort >= 5 :
+                return render_template('intentos.html')
+            #Borra los intentos con ese nombre de usuario
+            cursor.execute("TRUNCATE TABLE intentos")
+            conn.commit()
 
     return render_template('login.html')
 
