@@ -7,6 +7,12 @@
 <h1 class="h2">Bienvenido Admin {{ username }}!</h1>
 <hr>
 <div class=" container">
+    <h4>Hacer Administrador a Algún Usuario</h4>
+    <div class="row" style="justify-content: space-evenly;">
+        <a class="btn btn-perfil btn-p2 w-100" href="{{ url_for('hacer_admins') }}">Elegir Usuario a Hacer Administrador</a>
+    </div>
+    <br>
+    <h4>Acciones Sobre Datos</h4>
     <div class="row" style="justify-content: space-evenly;">
         <div class=" row" style="flex-direction: column;">
             <h4>Acciones para contenido</h4>
@@ -52,6 +58,7 @@
 
         </div>
     </div>
+    <br>
     <h4>Reporte</h4>
     <div class="row">   
         <a class="btn btn-perfil btn-p2 w-100" href="{{ url_for('prequery1') }}">El top 10 de géneros de contenido más visto, y los minutos consumidos para un rango de fechas dado</a>

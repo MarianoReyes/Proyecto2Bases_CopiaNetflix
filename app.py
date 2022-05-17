@@ -112,11 +112,10 @@ def login():
                 # Muestra el mensaje
                 mensaje = f"Lleva: {contador} intentos fallidos"
                 flash(mensaje)
-                contadort=contador['count']
-                if contadort >= 5 :
+                contadort = contador['count']
+                if contadort >= 5:
                     return render_template('intentos.html')
-                
-                
+
         else:
             # Account doesnt exist or username/password incorrect
             flash('Incorrect username/password')
@@ -131,10 +130,10 @@ def login():
             # Muestra el mensaje
             mensaje = f"Lleva: {contador} intentos fallidos"
             flash(mensaje)
-            contadort=contador['count']
-            if contadort >= 5 :
+            contadort = contador['count']
+            if contadort >= 5:
                 return render_template('intentos.html')
-                      
+
     return render_template('login.html')
 
 
@@ -1136,6 +1135,35 @@ def query5():
     hora_pico = resultados['hora']
     repeticiones_hora = resultados['repeticiones_hora']
     return render_template("query5.html", hora_pico=hora_pico, repeticiones_hora=repeticiones_hora, fecha=fecha)
+
+
+# PROYECTO 3 DE ACA EN ADELANTE
+
+@app.route('/hacer_admins/', methods=['GET', 'POST'])
+def hacer_admins():
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    # Mando a llamar Peliculas y series
+    cursor.execute(
+        'select *  from cuentas')
+    usuarios = cursor.fetchall()
+    return render_template('hacer_admins.html', usuarios=usuarios)
+
+
+@app.route('/hacer_admin/<usuario>', methods=['GET', 'POST'])
+def hacer_admin(usuario):
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cursor.execute(
+        'SELECT email FROM cuentas WHERE username=%s', (usuario,))
+    email = cursor.fetchone()
+    correo = email['email']
+    # actualizar el atributo de qadmin de una cuenta
+    cursor.execute(
+        'UPDATE cuentas SET admin = 1 WHERE email=%s', (correo,))
+
+    conn.commit()
+    flash("Cuenta Upgradeada a Administrador con éxito")
+    return render_template('hacer_admins.html')
 
 
 @app.route('/logout')
