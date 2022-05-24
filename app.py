@@ -10,6 +10,7 @@ import json
 from wtforms import StringField, SubmitField, PasswordField, BooleanField, ValidationError, TextAreaField
 from wtforms.validators import DataRequired, EqualTo, Length
 from flask_wtf import FlaskForm
+from datetime import datetime
 import datetime
 
 app = Flask(__name__)
@@ -883,11 +884,10 @@ def vistos(sp, name, cuenta):
 
     contador = contador['count']
 
-    fecha_terminado = datetime.date.today()
-
+   
     if contador == '0':
         cursor.execute(
-            'insert into contenido (serie_pelicula,nombre_perfil,correo_cuenta,fecha_terminado) values (%s,%s,%s,%s)', (sp, name, cuenta, fecha_terminado))
+            'insert into contenido (serie_pelicula,nombre_perfil,correo_cuenta,fecha_terminado) values (%s,%s,%s,%s)', (sp, name, cuenta, datetime.datetime.now(),))
         conn.commit()
 
         cursor.execute(
