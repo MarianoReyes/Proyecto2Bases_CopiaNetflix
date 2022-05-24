@@ -537,6 +537,8 @@ def borrar_ps(name):
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     cursor.execute(
         'DELETE FROM serie_peliculas WHERE serie_pelicula=%s', (name,))
+    cursor.execute(
+        'DELETE FROM actores WHERE serie_pelicula=%s', (name,))
     conn.commit()
     flash("Serie o Pelicula borrada con éxito")
 
