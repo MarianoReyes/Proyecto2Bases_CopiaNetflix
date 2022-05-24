@@ -884,10 +884,9 @@ def vistos(sp, name, cuenta):
 
     contador = contador['count']
 
-   
     if contador == '0':
         cursor.execute(
-            'insert into contenido (serie_pelicula,nombre_perfil,correo_cuenta,fecha_terminado) values (%s,%s,%s,%s)', (sp, name, cuenta, datetime.datetime.now(),))
+            'insert into contenido (serie_pelicula,nombre_perfil,correo_cuenta,date(fecha_terminado)) values (%s,%s,%s,%s)', (sp, name, cuenta, datetime.datetime.now(),))
         conn.commit()
 
         cursor.execute(
@@ -1065,10 +1064,10 @@ def query1():
     fecha1 = request.form['fechain']
     fecha2 = request.form['fechafi']
     # top generos vistos en rango de fechas
-    cursor.execute('select serie_peliculas.categoria as categoria, count(*) as cantidad_por_genero from contenido natural join serie_peliculas where fecha_terminado between %s and %s group by serie_peliculas.categoria order by cantidad_por_genero  desc limit 10', (fecha1, fecha2))
+    cursor.execute('select serie_peliculas.categoria as categoria, count(*) as cantidad_por_genero from contenido natural join serie_peliculas where date(fecha_terminado) between %s and %s group by serie_peliculas.categoria order by cantidad_por_genero  desc limit 10', (fecha1, fecha2))
     categorias = cursor.fetchall()
     # minutos consumidos
-    cursor.execute('select sum(duracion) as total_mins_consumidos from contenido natural join serie_peliculas where fecha_terminado between %s and %s', (fecha1, fecha2))
+    cursor.execute('select sum(duracion) as total_mins_consumidos from contenido natural join serie_peliculas where date(fecha_terminado) between %s and %s', (fecha1, fecha2))
     minutos = cursor.fetchone()
     return render_template("query1.html", categorias=categorias, minutos=minutos)
 
@@ -1084,11 +1083,11 @@ def query2():
     fecha1 = request.form['fechain']
     fecha2 = request.form['fechafi']
     # top generos vistos en rango de fechas por tipo de cuenta
-    cursor.execute('select serie_peliculas.categoria as categoria, count(*) as cantidad_por_categoria from contenido join cuentas on cuentas.email = contenido.correo_cuenta natural join serie_peliculas where tipocuenta = %s and fecha_terminado between %s and %s group by serie_peliculas.categoria order by cantidad_por_categoria desc limit 10', ('Gratis', fecha1, fecha2))
+    cursor.execute('select serie_peliculas.categoria as categoria, count(*) as cantidad_por_categoria from contenido join cuentas on cuentas.email = contenido.correo_cuenta natural join serie_peliculas where tipocuenta = %s and date(fecha_terminado) between %s and %s group by serie_peliculas.categoria order by cantidad_por_categoria desc limit 10', ('Gratis', fecha1, fecha2))
     gratis = cursor.fetchall()
-    cursor.execute('select serie_peliculas.categoria as categoria, count(*) as cantidad_por_categoria from contenido join cuentas on cuentas.email = contenido.correo_cuenta natural join serie_peliculas where tipocuenta = %s and fecha_terminado between %s and %s group by serie_peliculas.categoria order by cantidad_por_categoria desc limit 10', ('Standard', fecha1, fecha2))
+    cursor.execute('select serie_peliculas.categoria as categoria, count(*) as cantidad_por_categoria from contenido join cuentas on cuentas.email = contenido.correo_cuenta natural join serie_peliculas where tipocuenta = %s and date(fecha_terminado) between %s and %s group by serie_peliculas.categoria order by cantidad_por_categoria desc limit 10', ('Standard', fecha1, fecha2))
     standard = cursor.fetchall()
-    cursor.execute('select serie_peliculas.categoria as categoria, count(*) as cantidad_por_categoria from contenido join cuentas on cuentas.email = contenido.correo_cuenta natural join serie_peliculas where tipocuenta = %s and fecha_terminado between %s and %s group by serie_peliculas.categoria order by cantidad_por_categoria desc limit 10', ('Premium', fecha1, fecha2))
+    cursor.execute('select serie_peliculas.categoria as categoria, count(*) as cantidad_por_categoria from contenido join cuentas on cuentas.email = contenido.correo_cuenta natural join serie_peliculas where tipocuenta = %s and date(fecha_terminado) between %s and %s group by serie_peliculas.categoria order by cantidad_por_categoria desc limit 10', ('Premium', fecha1, fecha2))
     premium = cursor.fetchall()
     return render_template("query2.html", gratis=gratis, standard=standard, premium=premium)
 
