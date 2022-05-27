@@ -169,7 +169,7 @@ def register():
                     end;
                     $BODY$
                     language 'plpgsql'
-                    ;''',(email, "Creacion Cuenta", datetime.datetime.now()))
+                    ;''', (email, "Creacion Cuenta", datetime.datetime.now()))
         conn.commit()
 
         # If account exists show error and validation checks
@@ -187,13 +187,12 @@ def register():
                            (fullname, username, _hashed_password, email, tipocuenta, admin, fecha_creacion))
             conn.commit()
             flash('Te has registrado correctamente!')
-        
+
     elif request.method == 'POST':
         # Form is empty... (no POST data)
         flash('Por favor llene el formulario!')
     # Show registration form with message (if any)
 
-    
     return render_template('register.html')
 
 
@@ -277,7 +276,7 @@ def crear_perfil():
         else:
             if request.method == 'POST' and 'nombreperfil' in request.form:
                 flash('Ya no se pueden crear mas perfiles')
-    
+
     cursor.execute('''create or replace function nuevo_perfil()
                     returns trigger as 
                     $BODY$
@@ -287,7 +286,7 @@ def crear_perfil():
                     end;
                     $BODY$
                     language 'plpgsql'
-                    ;''',(email, "Crear Perfil", datetime.datetime.now()))
+                    ;''', (email, "Crear Perfil", datetime.datetime.now()))
     conn.commit()
 
     return render_template('crear_perfil.html', username=session['username'])
@@ -316,7 +315,6 @@ def borrar_perfil(name, email):
         'DELETE FROM perfiles WHERE email=%s and nombre_perfil=%s', (email, name))
     conn.commit()
 
-
     flash("Perfil borrado con éxito")
 
     # Mando a llamar Peliculas y series
@@ -337,7 +335,7 @@ def borrar_perfil(name, email):
                     end;
                     $BODY$
                     language 'plpgsql'
-                    ;''',(email, "Borrar Perfil", datetime.datetime.now()))
+                    ;''', (email, "Borrar Perfil", datetime.datetime.now()))
     conn.commit()
 
     return render_template('borrar_perfiles.html', perfiles=perfiles, account=account)
@@ -370,14 +368,12 @@ def cambiocuenta():
                     end;
                     $BODY$
                     language 'plpgsql'
-                    ;''',(email, "Update Cuenta", datetime.datetime.now()))
+                    ;''', (email, "Update Cuenta", datetime.datetime.now()))
     conn.commit()
-
 
     # rediregir a cambio cuenta
     return render_template('cambiocuenta.html', account=account)
-    
-    
+
 
 # Pagina de home de perfiles
 
@@ -430,12 +426,11 @@ def homep(name):
                     end;
                     $BODY$
                     language 'plpgsql'
-                    ;''',(email, "Update Perfil", datetime.datetime.now()))
+                    ;''', (email, "Update Perfil", datetime.datetime.now()))
     conn.commit()
 
     # Mandar a pagina de inicio del perfil
     return render_template('homep.html', account=account, perfil=perfil, series_peliculas=series_peliculas, anuncios=anuncios, tipocuenta=tipocuenta, recomendaciones=recomendaciones)
-
 
 
 @app.route('/regresar_home/<name>')
@@ -464,7 +459,7 @@ def regresar_home(name):
                     end;
                     $BODY$
                     language 'plpgsql'
-                    ;''',(email, "Update Perfil", datetime.datetime.now()))
+                    ;''', (email, "Update Perfil", datetime.datetime.now()))
     conn.commit()
     # User is loggedin show them the home page
     return render_template('home.html', username=session['username'], account=account, perfiles=perfiles)
@@ -514,7 +509,7 @@ def agregar_pos():
                     end;
                     $BODY$
                     language 'plpgsql'
-                    ;''',(email, "Agregar Serie_Pelicula", datetime.datetime.now()))
+                    ;''', (email, "Agregar Serie_Pelicula", datetime.datetime.now()))
     conn.commit()
 
     if request.method == 'POST' and 'nombre' in request.form and 'imagen' in request.form and 'link' in request.form and 'director' in request.form:
@@ -556,7 +551,7 @@ def agregar_actores(nombrepos, nombreac):
                     end;
                     $BODY$
                     language 'plpgsql'
-                    ;''',(email, "Agregar Actor", datetime.datetime.now()))
+                    ;''', (email, "Agregar Actor", datetime.datetime.now()))
     conn.commit()
 
     nombrepos = json.loads(nombrepos)
@@ -608,9 +603,8 @@ def modificar_pos(nombrepos):
                     end;
                     $BODY$
                     language 'plpgsql'
-                    ;''',(email, "Update Serie_Pelicula", datetime.datetime.now()))
+                    ;''', (email, "Update Serie_Pelicula", datetime.datetime.now()))
     conn.commit()
-
 
     if request.method == 'POST' and 'nombre' in request.form and 'imagen' in request.form and 'link' in request.form and 'director' in request.form:
         pelicula_serie = request.form['nombre']
@@ -657,7 +651,7 @@ def modificar_actores(nombrepos):
                     end;
                     $BODY$
                     language 'plpgsql'
-                    ;''',(email, "Update Actor", datetime.datetime.now()))
+                    ;''', (email, "Update Actor", datetime.datetime.now()))
     conn.commit()
 
     if request.method == 'POST' and 'nombrea' in request.form and 'nombren' in request.form:
@@ -691,7 +685,6 @@ def borrar_pos():
 def borrar_ps(name):
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
-    
     cursor.execute('SELECT * FROM cuentas WHERE id = %s', [session['id']])
     account = cursor.fetchone()
 
@@ -706,7 +699,7 @@ def borrar_ps(name):
                     end;
                     $BODY$
                     language 'plpgsql'
-                    ;''',(email, "Delete Serie_Pelicula", datetime.datetime.now()))
+                    ;''', (email, "Delete Serie_Pelicula", datetime.datetime.now()))
     conn.commit()
 
     cursor.execute('''create or replace function delete_actor()
@@ -718,7 +711,7 @@ def borrar_ps(name):
                     end;
                     $BODY$
                     language 'plpgsql'
-                    ;''',(email, "Delete Actor", datetime.datetime.now()))
+                    ;''', (email, "Delete Actor", datetime.datetime.now()))
     conn.commit()
 
     cursor.execute(
@@ -765,7 +758,7 @@ def modificar_usuario(usuario):
             fecha_creacion = request.form['fechacreacion']
 
             _hashed_password = generate_password_hash(password)
-            
+
             cursor.execute('''create or replace function update_cuenta()
                     returns trigger as 
                     $BODY$
@@ -775,7 +768,7 @@ def modificar_usuario(usuario):
                     end;
                     $BODY$
                     language 'plpgsql'
-                    ;''',(email, "Update Cuenta", datetime.datetime.now()))
+                    ;''', (email, "Update Cuenta", datetime.datetime.now()))
             conn.commit()
 
             if not re.match(r'[^@]+@[^@]+\.[^@]+', email):
@@ -824,7 +817,7 @@ def borrar_usuario(usuario):
                     end;
                     $BODY$
                     language 'plpgsql'
-                    ;''',(correo, "Borrar Cuenta", datetime.datetime.now()))
+                    ;''', (correo, "Borrar Cuenta", datetime.datetime.now()))
     conn.commit()
 
     # borrar todo a llamar Peliculas y series
@@ -840,7 +833,7 @@ def borrar_usuario(usuario):
         'DELETE FROM sugerencias WHERE correo_cuenta=%s', (correo,))
     conn.commit()
     flash("Usuario desactivado con éxito")
-    
+
     return render_template('borrar_usuarios.html')
 
 
@@ -862,7 +855,7 @@ def agregar_anunciante():
                     end;
                     $BODY$
                     language 'plpgsql'
-                    ;''',(email, "Agregar anunciante", datetime.datetime.now()))
+                    ;''', (email, "Agregar anunciante", datetime.datetime.now()))
     conn.commit()
 
     if request.method == 'POST' and 'nombrean' in request.form and 'correo' in request.form and 'telefono' in request.form:
@@ -912,7 +905,7 @@ def borrar_anunciante(anunciante):
                     end;
                     $BODY$
                     language 'plpgsql'
-                    ;''',(email, "Delete anunciante", datetime.datetime.now()))
+                    ;''', (email, "Delete anunciante", datetime.datetime.now()))
     conn.commit()
 
     # Mando a eliminar a anunciantes y anuncios con el nombre del anunciante
@@ -948,7 +941,7 @@ def agregar_anuncio():
                     end;
                     $BODY$
                     language 'plpgsql'
-                    ;''',(email, "Agregar Anuncio", datetime.datetime.now()))
+                    ;''', (email, "Agregar Anuncio", datetime.datetime.now()))
     conn.commit()
 
     if request.method == 'POST' and 'nombrean' in request.form and 'link' in request.form and 'anunciante' in request.form:
@@ -1003,7 +996,7 @@ def modificar_anuncio(anuncio):
                     end;
                     $BODY$
                     language 'plpgsql'
-                    ;''',(email, "Update Anuncio", datetime.datetime.now()))
+                    ;''', (email, "Update Anuncio", datetime.datetime.now()))
     conn.commit()
     # Check if "username", "password" and "email" POST requests exist (user submitted form)
     if request.method == 'POST':
@@ -1056,7 +1049,7 @@ def borrar_anuncio(anuncio):
                     end;
                     $BODY$
                     language 'plpgsql'
-                    ;''',(email, "Delete Anuncio", datetime.datetime.now()))
+                    ;''', (email, "Delete Anuncio", datetime.datetime.now()))
     conn.commit()
 
     cursor.execute(
@@ -1459,6 +1452,25 @@ def hacer_admin(usuario):
     conn.commit()
     flash("Cuenta Upgradeada a Administrador con éxito")
     return render_template('hacer_admins.html')
+
+
+@app.route('/precrearrepro/', methods=["POST", "GET"])
+def precrearrepro():
+    return render_template("precrearrepro.html")
+
+
+@app.route('/crearrepro/', methods=["POST", "GET"])
+def crearrepro():
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    fecha = request.form['fechain']
+    cantidad = request.form['cantidad']
+    # ejecucion de procedimiento almacenado
+    cursor.execute('call inserccion_aleatoria(%s, %s);', [fecha, cantidad, ])
+    conn.commit()
+    # reproducciones generadas en esa fecha dada
+    cursor.execute('select serie_pelicula as sop, nombre_perfil as nombre_perfil, correo_cuenta as correo_cuenta from contenido where fecha_terminado = %s', (fecha,))
+    reproducciones = cursor.fetchall()
+    return render_template("crearrepro.html", fecha=fecha, cantidad=cantidad, reproducciones=reproducciones)
 
 
 @app.route('/logout')

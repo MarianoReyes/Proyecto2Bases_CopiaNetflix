@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset="utf-8">
+  <title>Query 1</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
+  <!-- Google Fonts -->
+  <link href='https://fonts.googleapis.com/css?family=Passion+One' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Oxygen' rel='stylesheet' type='text/css'>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+ </head>
+ <body style="background-color:#8ea1b8;">
+ <div class="container">
+    <div class="row" style="margin-top: 10px;">
+        <div class="main-login main-center" style="max-width: 90%!important;">
+            <h4>{{cantidad}} Reproducciones Creadas para la fecha: {{fecha}}</h4>
+            <br>
+            <br>
+            <a href="{{ url_for('home') }}" class="btn btn-dark " style="background: #4a6ebb!important; margin: 5px 0;">Regresar al Dashboard</a>
+            <table class="table">
+                <tr >
+                    <th>Serie o Peliculas</th>
+                    <th>Nombre del Perfil</th>
+                    <th>Correo del la Cuenta</th>
+                </tr>
+                
+                {% for reproduccion in reproducciones %}
+                <tr>
+                    <td>{{reproduccion['sop']}}</td>
+                    <td>{{reproduccion['nombre_perfil']}}</td>
+                    <td>{{reproduccion['correo_cuenta']}}</td>
+                </tr>
+                {% endfor %}  
+                
+            </table>
+            <br>
+
+
+            
+            <a href="{{ url_for('home') }}" class="btn btn-dark " style="background: #4a6ebb!important; margin: 5px 0;">Regresar al Dashboard</a>
+        </div>
+        
+    </div>
+  </div>
+
+ <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>  
+ </body>
+</html>
