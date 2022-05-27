@@ -160,6 +160,18 @@ def register():
             'SELECT * FROM cuentas WHERE username = %s', (username,))
         account = cursor.fetchone()
 
+        cursor.execute('''create or replace function crear_cuenta()
+                    returns trigger as 
+                    $BODY$
+                    begin 
+                        insert into bitacora (correo_cuenta , accion , fecha_accion ) values (%s,%s,%s);
+                        return new;
+                    end;
+                    $BODY$
+                    language 'plpgsql'
+                    ;''',(email, "Creacion Cuenta", datetime.datetime.now()))
+        conn.commit()
+
         # If account exists show error and validation checks
         if account:
             flash('La cuenta ya existe!')
@@ -175,10 +187,13 @@ def register():
                            (fullname, username, _hashed_password, email, tipocuenta, admin, fecha_creacion))
             conn.commit()
             flash('Te has registrado correctamente!')
+        
     elif request.method == 'POST':
         # Form is empty... (no POST data)
         flash('Por favor llene el formulario!')
     # Show registration form with message (if any)
+
+    
     return render_template('register.html')
 
 
@@ -204,6 +219,8 @@ def crear_perfil():
 
     cursor.execute('SELECT * FROM cuentas WHERE id = %s', [session['id']])
     account = cursor.fetchone()
+
+    email = account['email']
 
     # Check if "username", "password" and "email" POST requests exist (user submitted form)
     if account['tipocuenta'] == 'Premium':
@@ -260,6 +277,18 @@ def crear_perfil():
         else:
             if request.method == 'POST' and 'nombreperfil' in request.form:
                 flash('Ya no se pueden crear mas perfiles')
+    
+    cursor.execute('''create or replace function nuevo_perfil()
+                    returns trigger as 
+                    $BODY$
+                    begin 
+                        insert into bitacora (correo_cuenta , accion , fecha_accion ) values (%s,%s,%s);
+                        return new;
+                    end;
+                    $BODY$
+                    language 'plpgsql'
+                    ;''',(email, "Crear Perfil", datetime.datetime.now()))
+    conn.commit()
 
     return render_template('crear_perfil.html', username=session['username'])
 
@@ -286,6 +315,8 @@ def borrar_perfil(name, email):
     cursor.execute(
         'DELETE FROM perfiles WHERE email=%s and nombre_perfil=%s', (email, name))
     conn.commit()
+
+
     flash("Perfil borrado con éxito")
 
     # Mando a llamar Peliculas y series
@@ -296,6 +327,19 @@ def borrar_perfil(name, email):
     cursor.execute(
         'select *  from cuentas where email = %s', (email,))
     account = cursor.fetchall()
+
+    cursor.execute('''create or replace function borrar_perfil()
+                    returns trigger as 
+                    $BODY$
+                    begin 
+                        insert into bitacora (correo_cuenta , accion , fecha_accion ) values (%s,%s,%s);
+                        return new;
+                    end;
+                    $BODY$
+                    language 'plpgsql'
+                    ;''',(email, "Borrar Perfil", datetime.datetime.now()))
+    conn.commit()
+
     return render_template('borrar_perfiles.html', perfiles=perfiles, account=account)
 
 
@@ -306,6 +350,8 @@ def cambiocuenta():
     cursor.execute('SELECT * FROM cuentas WHERE id = %s', [session['id']])
     account = cursor.fetchone()
 
+    email = account['email']
+
     if 'tipocuenta' in request.form:
         # Check tipo de cuenta
         tipocuenta = request.form['tipocuenta']
@@ -315,8 +361,23 @@ def cambiocuenta():
         conn.commit()
         flash('Tipo de Cuenta Actualizada')
 
+    cursor.execute('''create or replace function update_cuenta()
+                    returns trigger as 
+                    $BODY$
+                    begin 
+                        insert into bitacora (correo_cuenta , accion , fecha_accion ) values (%s,%s,%s);
+                        return new;
+                    end;
+                    $BODY$
+                    language 'plpgsql'
+                    ;''',(email, "Update Cuenta", datetime.datetime.now()))
+    conn.commit()
+
+
     # rediregir a cambio cuenta
     return render_template('cambiocuenta.html', account=account)
+    
+    
 
 # Pagina de home de perfiles
 
@@ -360,8 +421,21 @@ def homep(name):
         'UPDATE perfiles SET activo = 1 WHERE nombre_perfil = (%s) AND email = (%s)', (name, email))
     conn.commit()
 
+    cursor.execute('''create or replace function update_perfil()
+                    returns trigger as 
+                    $BODY$
+                    begin 
+                        insert into bitacora (correo_cuenta , accion , fecha_accion ) values (%s,%s,%s);
+                        return new;
+                    end;
+                    $BODY$
+                    language 'plpgsql'
+                    ;''',(email, "Update Perfil", datetime.datetime.now()))
+    conn.commit()
+
     # Mandar a pagina de inicio del perfil
     return render_template('homep.html', account=account, perfil=perfil, series_peliculas=series_peliculas, anuncios=anuncios, tipocuenta=tipocuenta, recomendaciones=recomendaciones)
+
 
 
 @app.route('/regresar_home/<name>')
@@ -381,6 +455,17 @@ def regresar_home(name):
                    [account['email']])
     perfiles = cursor.fetchall()
 
+    cursor.execute('''create or replace function update_perfil()
+                    returns trigger as 
+                    $BODY$
+                    begin 
+                        insert into bitacora (correo_cuenta , accion , fecha_accion ) values (%s,%s,%s);
+                        return new;
+                    end;
+                    $BODY$
+                    language 'plpgsql'
+                    ;''',(email, "Update Perfil", datetime.datetime.now()))
+    conn.commit()
     # User is loggedin show them the home page
     return render_template('home.html', username=session['username'], account=account, perfiles=perfiles)
 
@@ -415,6 +500,23 @@ def agregar_pos():
 
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
+    cursor.execute('SELECT * FROM cuentas WHERE id = %s', [session['id']])
+    account = cursor.fetchone()
+
+    email = account['email']
+
+    cursor.execute('''create or replace function agregar_serie_pelicula()
+                    returns trigger as 
+                    $BODY$
+                    begin 
+                        insert into bitacora (correo_cuenta , accion , fecha_accion ) values (%s,%s,%s);
+                        return new;
+                    end;
+                    $BODY$
+                    language 'plpgsql'
+                    ;''',(email, "Agregar Serie_Pelicula", datetime.datetime.now()))
+    conn.commit()
+
     if request.method == 'POST' and 'nombre' in request.form and 'imagen' in request.form and 'link' in request.form and 'director' in request.form:
         pelicula_serie = request.form['nombre']
         imagen = request.form['imagen']
@@ -439,6 +541,23 @@ def agregar_pos():
 def agregar_actores(nombrepos, nombreac):
 
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    cursor.execute('SELECT * FROM cuentas WHERE id = %s', [session['id']])
+    account = cursor.fetchone()
+
+    email = account['email']
+
+    cursor.execute('''create or replace function agregar_actor()
+                    returns trigger as 
+                    $BODY$
+                    begin 
+                        insert into bitacora (correo_cuenta , accion , fecha_accion ) values (%s,%s,%s);
+                        return new;
+                    end;
+                    $BODY$
+                    language 'plpgsql'
+                    ;''',(email, "Agregar Actor", datetime.datetime.now()))
+    conn.commit()
 
     nombrepos = json.loads(nombrepos)
     nombreac = json.loads(nombreac)
@@ -475,6 +594,24 @@ def modificar_pos(nombrepos):
     nombrepos = nombrepos
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
+    cursor.execute('SELECT * FROM cuentas WHERE id = %s', [session['id']])
+    account = cursor.fetchone()
+
+    email = account['email']
+
+    cursor.execute('''create or replace function update_serie_pelicula()
+                    returns trigger as 
+                    $BODY$
+                    begin 
+                        insert into bitacora (correo_cuenta , accion , fecha_accion ) values (%s,%s,%s);
+                        return new;
+                    end;
+                    $BODY$
+                    language 'plpgsql'
+                    ;''',(email, "Update Serie_Pelicula", datetime.datetime.now()))
+    conn.commit()
+
+
     if request.method == 'POST' and 'nombre' in request.form and 'imagen' in request.form and 'link' in request.form and 'director' in request.form:
         pelicula_serie = request.form['nombre']
         imagen = request.form['imagen']
@@ -506,6 +643,23 @@ def modificar_actores(nombrepos):
     print(nombrepos)
     print(actores)
 
+    cursor.execute('SELECT * FROM cuentas WHERE id = %s', [session['id']])
+    account = cursor.fetchone()
+
+    email = account['email']
+
+    cursor.execute('''create or replace function update_actor()
+                    returns trigger as 
+                    $BODY$
+                    begin 
+                        insert into bitacora (correo_cuenta , accion , fecha_accion ) values (%s,%s,%s);
+                        return new;
+                    end;
+                    $BODY$
+                    language 'plpgsql'
+                    ;''',(email, "Update Actor", datetime.datetime.now()))
+    conn.commit()
+
     if request.method == 'POST' and 'nombrea' in request.form and 'nombren' in request.form:
         nombreantiguo = request.form['nombrea']
         nombrenuevo = request.form['nombren']
@@ -536,6 +690,37 @@ def borrar_pos():
 @app.route('/borrar_ps/<name>/', methods=['GET', 'POST'])
 def borrar_ps(name):
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    
+    cursor.execute('SELECT * FROM cuentas WHERE id = %s', [session['id']])
+    account = cursor.fetchone()
+
+    email = account['email']
+
+    cursor.execute('''create or replace function delete_serie_pelicula()
+                    returns trigger as 
+                    $BODY$
+                    begin 
+                        insert into bitacora (correo_cuenta , accion , fecha_accion ) values (%s,%s,%s);
+                        return new;
+                    end;
+                    $BODY$
+                    language 'plpgsql'
+                    ;''',(email, "Delete Serie_Pelicula", datetime.datetime.now()))
+    conn.commit()
+
+    cursor.execute('''create or replace function delete_actor()
+                    returns trigger as 
+                    $BODY$
+                    begin 
+                        insert into bitacora (correo_cuenta , accion , fecha_accion ) values (%s,%s,%s);
+                        return new;
+                    end;
+                    $BODY$
+                    language 'plpgsql'
+                    ;''',(email, "Delete Actor", datetime.datetime.now()))
+    conn.commit()
+
     cursor.execute(
         'DELETE FROM serie_peliculas WHERE serie_pelicula=%s', (name,))
     cursor.execute(
@@ -580,6 +765,18 @@ def modificar_usuario(usuario):
             fecha_creacion = request.form['fechacreacion']
 
             _hashed_password = generate_password_hash(password)
+            
+            cursor.execute('''create or replace function update_cuenta()
+                    returns trigger as 
+                    $BODY$
+                    begin 
+                        insert into bitacora (correo_cuenta , accion , fecha_accion ) values (%s,%s,%s);
+                        return new;
+                    end;
+                    $BODY$
+                    language 'plpgsql'
+                    ;''',(email, "Update Cuenta", datetime.datetime.now()))
+            conn.commit()
 
             if not re.match(r'[^@]+@[^@]+\.[^@]+', email):
                 flash('Dirección de correo invalida!')
@@ -617,6 +814,19 @@ def borrar_usuario(usuario):
         'SELECT email FROM cuentas WHERE username=%s', (usuario,))
     email = cursor.fetchone()
     correo = email['email']
+
+    cursor.execute('''create or replace function borrar_cuenta()
+                    returns trigger as 
+                    $BODY$
+                    begin 
+                        insert into bitacora (correo_cuenta , accion , fecha_accion ) values (%s,%s,%s);
+                        return new;
+                    end;
+                    $BODY$
+                    language 'plpgsql'
+                    ;''',(correo, "Borrar Cuenta", datetime.datetime.now()))
+    conn.commit()
+
     # borrar todo a llamar Peliculas y series
     cursor.execute(
         'DELETE FROM cuentas WHERE username=%s', (usuario,))
@@ -630,6 +840,7 @@ def borrar_usuario(usuario):
         'DELETE FROM sugerencias WHERE correo_cuenta=%s', (correo,))
     conn.commit()
     flash("Usuario desactivado con éxito")
+    
     return render_template('borrar_usuarios.html')
 
 
@@ -637,6 +848,22 @@ def borrar_usuario(usuario):
 def agregar_anunciante():
 
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cursor.execute('SELECT * FROM cuentas WHERE id = %s', [session['id']])
+    account = cursor.fetchone()
+
+    email = account['email']
+
+    cursor.execute('''create or replace function agregar_anunciante()
+                    returns trigger as 
+                    $BODY$
+                    begin 
+                        insert into bitacora (correo_cuenta , accion , fecha_accion ) values (%s,%s,%s);
+                        return new;
+                    end;
+                    $BODY$
+                    language 'plpgsql'
+                    ;''',(email, "Agregar anunciante", datetime.datetime.now()))
+    conn.commit()
 
     if request.method == 'POST' and 'nombrean' in request.form and 'correo' in request.form and 'telefono' in request.form:
         nombre_anunciante = request.form['nombrean']
@@ -671,6 +898,22 @@ def borrar_anunciantes():
 @app.route('/borrar_anunciante/<anunciante>', methods=['GET', 'POST'])
 def borrar_anunciante(anunciante):
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cursor.execute('SELECT * FROM cuentas WHERE id = %s', [session['id']])
+    account = cursor.fetchone()
+
+    email = account['email']
+
+    cursor.execute('''create or replace function delete_anunciante()
+                    returns trigger as 
+                    $BODY$
+                    begin 
+                        insert into bitacora (correo_cuenta , accion , fecha_accion ) values (%s,%s,%s);
+                        return new;
+                    end;
+                    $BODY$
+                    language 'plpgsql'
+                    ;''',(email, "Delete anunciante", datetime.datetime.now()))
+    conn.commit()
 
     # Mando a eliminar a anunciantes y anuncios con el nombre del anunciante
     cursor.execute(
@@ -690,6 +933,23 @@ def agregar_anuncio():
     cursor.execute(
         'select *  from anunciantes')
     anunciantes = cursor.fetchall()
+
+    cursor.execute('SELECT * FROM cuentas WHERE id = %s', [session['id']])
+    account = cursor.fetchone()
+
+    email = account['email']
+
+    cursor.execute('''create or replace function agregar_anuncio()
+                    returns trigger as 
+                    $BODY$
+                    begin 
+                        insert into bitacora (correo_cuenta , accion , fecha_accion ) values (%s,%s,%s);
+                        return new;
+                    end;
+                    $BODY$
+                    language 'plpgsql'
+                    ;''',(email, "Agregar Anuncio", datetime.datetime.now()))
+    conn.commit()
 
     if request.method == 'POST' and 'nombrean' in request.form and 'link' in request.form and 'anunciante' in request.form:
         nombre_anuncio = request.form['nombrean']
@@ -728,6 +988,23 @@ def modificar_anuncio(anuncio):
     cursor.execute(
         'select *  from anunciantes')
     anunciantes = cursor.fetchall()
+
+    cursor.execute('SELECT * FROM cuentas WHERE id = %s', [session['id']])
+    account = cursor.fetchone()
+
+    email = account['email']
+
+    cursor.execute('''create or replace function update_anuncio()
+                    returns trigger as 
+                    $BODY$
+                    begin 
+                        insert into bitacora (correo_cuenta , accion , fecha_accion ) values (%s,%s,%s);
+                        return new;
+                    end;
+                    $BODY$
+                    language 'plpgsql'
+                    ;''',(email, "Update Anuncio", datetime.datetime.now()))
+    conn.commit()
     # Check if "username", "password" and "email" POST requests exist (user submitted form)
     if request.method == 'POST':
         if request.method == 'POST' and 'nombrean' in request.form and 'link' in request.form and 'anunciante' in request.form:
@@ -764,6 +1041,23 @@ def borrar_anuncios():
 @app.route('/borrar_anuncio/<anuncio>', methods=['GET', 'POST'])
 def borrar_anuncio(anuncio):
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    cursor.execute('SELECT * FROM cuentas WHERE id = %s', [session['id']])
+    account = cursor.fetchone()
+
+    email = account['email']
+
+    cursor.execute('''create or replace function delete_anuncio()
+                    returns trigger as 
+                    $BODY$
+                    begin 
+                        insert into bitacora (correo_cuenta , accion , fecha_accion ) values (%s,%s,%s);
+                        return new;
+                    end;
+                    $BODY$
+                    language 'plpgsql'
+                    ;''',(email, "Delete Anuncio", datetime.datetime.now()))
+    conn.commit()
 
     cursor.execute(
         'DELETE FROM anuncios WHERE nombre_anuncio=%s', (anuncio,))
