@@ -1140,6 +1140,26 @@ def query5():
 
 # PROYECTO 3 DE ACA EN ADELANTE
 
+@app.route('/prequery6', methods=['POST', 'GET'])
+def prequery6():
+
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    if request.method == 'POST' and 'nombrean' in request.form and 'correo' in request.form and 'telefono' in request.form:
+        nombre_anunciante = request.form['nombrean']
+        correo_contacto = request.form['correo']
+        telefono = request.form['telefono']
+
+        # Account doesnt exists and the form data is valid, now insert new account into cuentas table
+        cursor.execute("INSERT INTO anunciantes (nombre_anunciante, correo_contacto, telefono) VALUES (%s,%s,%s)",
+                       (nombre_anunciante, correo_contacto, telefono))
+        conn.commit()
+        flash('Anunciante creado con éxito')
+
+    # Mandar a pagina para agregar series o peliculas
+    return render_template('prequery6.html')
+
+
 @app.route('/hacer_admins/', methods=['GET', 'POST'])
 def hacer_admins():
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
