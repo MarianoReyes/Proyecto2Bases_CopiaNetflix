@@ -1050,6 +1050,11 @@ def search(name):
             'select serie_pelicula,imagen,link_repro from serie_peliculas where categoria like %s', (search,))
         categoria = cursor.fetchall()
 
+        #inserta lo buscado en una nueva tabla 
+        cursor.execute(
+                    "INSERT INTO historial (busqueda) VALUES (%s)", (search))
+        conn.commit()
+        
         return render_template("search.html", form=form, searched=post, posts=posts, actores=actor, directores=director, categorias=categoria, perfil=perfil, anuncios=anuncios, tipocuenta=tipocuenta)
 
 
