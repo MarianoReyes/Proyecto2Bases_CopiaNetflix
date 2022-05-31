@@ -1021,6 +1021,7 @@ def search(name):
 
         # Obtener la data enviada
         post = form.searched.data
+
         #inserta lo buscado en una nueva tabla 
         cursor.execute(
                     'INSERT INTO historial (busqueda) VALUES (%s)', (post,))
@@ -1160,6 +1161,27 @@ def query6():
     cursor.execute('', (mes))
     resultado = cursor.fetchall()
     return render_template("query6.html", resultado=resultado)
+
+@app.route('/query7/', methods=["POST", "GET"])
+def query7():
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    #create index busqueda on historial(busqueda);
+    # create MATERIALIZED VIEW busquedas AS
+    # select busqueda , count(*) as busquedas
+    #     from historial
+    # group by busqueda  order by busquedas desc limit 10;
+ 
+    #manda a refrescar la vista
+    cursor.execute(
+        'REFRESH MATERIALIZED VIEW busquedas' )
+
+    # manda a llamar el query
+    cursor.execute(
+        'select * from busquedas' )
+    busquedas = cursor.fetchall()
+    return render_template("query7.html",busquedas=busquedas)
+
+
 
 
 @app.route('/hacer_admins/', methods=['GET', 'POST'])

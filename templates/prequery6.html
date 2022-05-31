@@ -11,6 +11,44 @@
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
  </head>
  <body style="background-color:#8ea1b8;">
+    <div class="container">
+      <div class="row main">
+       <div class="main-login main-center">
+       <h5>Mes para el query</h5>
+        <form action="{{url_for('query6')}}" method="post" autocomplete="off"> 
+            
+            <div class="form-group">
+                <label for="seleccionmes" class="cols-sm-2 control-label">Mes seleccionado</label>
+                <div class="cols-sm-10">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-users fa" aria-hidden="true"></i></span>
+                        <select id="mes" name="mes" class="select" style="width:80%">
+                            <option class="form-control select" value="01">enero</option>
+                            <option class="form-control select" value="02">febrero</option>
+                            <option class="form-control select" value="03">marzo</option>
+                            <option class="form-control select" value="04">abril</option>
+                            <option class="form-control select" value="05">mayo</option>
+                            <option class="form-control select" value="06">junio</option>
+                            <option class="form-control select" value="07">julio</option>
+                            <option class="form-control select" value="08">agosto</option>
+                            <option class="form-control select" value="09">septiembre</option>
+                            <option class="form-control select" value="10">octubre</option>
+                            <option class="form-control select" value="11">noviembre</option>
+                            <option class="form-control select" value="12">diciembre</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+           
+        </form>
+       </div>
+      </div>
+     </div>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>  
+    </body>
+ <!-- <body style="background-color:#8ea1b8;">
     <div class="form-group">
         <label for="seleccionmes" class="cols-sm-2 control-label">Mes seleccionado</label>
         <div class="cols-sm-10">
@@ -37,5 +75,5 @@
 
  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>  
- </body>
+ </body> -->
 </html>
