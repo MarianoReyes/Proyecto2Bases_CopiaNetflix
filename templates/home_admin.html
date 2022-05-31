@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
-  
+
 {% block title %}Dashboard de Admin{% endblock %}
-  
+
 {% block content %}
 
 <h1 class="h2">Bienvenido Admin {{ username }}!</h1>
@@ -9,7 +9,8 @@
 <div class=" container">
     <h4>Hacer Administrador a Algún Usuario</h4>
     <div class="row" style="justify-content: space-evenly;">
-        <a class="btn btn-perfil btn-p2 w-100" href="{{ url_for('hacer_admins') }}">Elegir Usuario a Hacer Administrador</a>
+        <a class="btn btn-perfil btn-p2 w-100" href="{{ url_for('hacer_admins') }}">Elegir Usuario a Hacer
+            Administrador</a>
     </div>
     <h4>Crear Reproducciones para una Fecha y Cantidad dadas</h4>
     <div class="row" style="justify-content: space-evenly;">
@@ -20,8 +21,8 @@
     <div class="row" style="justify-content: space-evenly;">
         <div class=" row" style="flex-direction: column;">
             <h4>Acciones para contenido</h4>
-            
-    
+
+
             <a class="btn btn-perfil btn-p2" href="{{ url_for('agregar_pos') }}">Agregar Película/Serie</a>
 
 
@@ -30,11 +31,11 @@
 
             <a class="btn btn-perfil btn-p2" href="{{ url_for('borrar_pos') }}">Borrar Película/Serie</a>
 
-    
+
         </div>
-    
+
         <div class=" row" style="flex-direction: column;">
-    
+
             <h4>Acciones para usuarios</h4>
 
             <a class="btn btn-perfil btn-p2" href="{{ url_for('modificar_usuarios') }}">Modificar Usuario</a>
@@ -42,10 +43,10 @@
 
             <a class="btn btn-perfil btn-p2" href="{{ url_for('borrar_usuarios') }}">Desactivar Usuario</a>
 
-    
+
         </div>
         <div class=" row" style="flex-direction: column;">
-    
+
             <h4>Acciones para Anunciante</h4>
 
             <a class="btn btn-perfil btn-p2" href="{{ url_for('agregar_anunciante') }}">Agregar Anunciante</a>
@@ -64,13 +65,24 @@
     </div>
     <br>
     <h4>Reporte</h4>
-    <div class="row">   
-        <a class="btn btn-perfil btn-p2 w-100" href="{{ url_for('prequery1') }}">El top 10 de géneros de contenido más visto, y los minutos consumidos para un rango de fechas dado</a>
-        <a class="btn btn-perfil btn-p2 w-100" href="{{ url_for('prequery2') }}">Cantidad de reproducciones por cada categoría, por tipo de cuenta para un rango de fechas dado</a>
-        <a class="btn btn-perfil btn-p2 w-100" href="{{ url_for('query3') }}">El top 10 de los directores y actores principales de las películas que los perfiles estándar y avanzados han visto</a>
-        <a class="btn btn-perfil btn-p2 w-100" href="{{ url_for('query4') }}">La cantidad de cuentas avanzadas se han creado en los últimos 6 meses</a>
-        <a class="btn btn-perfil btn-p2 w-100" href="{{ url_for('prequery5') }}">Para una fecha específica, ¿cuál es la hora pico donde el servicio es más utilizado?</a>
+    <div class="row">
+        <a class="btn btn-perfil btn-p2 w-100" href="{{ url_for('prequery1') }}">El top 10 de géneros de contenido más
+            visto, y los minutos consumidos para un rango de fechas dado</a>
+        <a class="btn btn-perfil btn-p2 w-100" href="{{ url_for('prequery2') }}">Cantidad de reproducciones por cada
+            categoría, por tipo de cuenta para un rango de fechas dado</a>
+        <a class="btn btn-perfil btn-p2 w-100" href="{{ url_for('query3') }}">El top 10 de los directores y actores
+            principales de las películas que los perfiles estándar y avanzados han visto</a>
+        <a class="btn btn-perfil btn-p2 w-100" href="{{ url_for('query4') }}">La cantidad de cuentas avanzadas se han
+            creado en los últimos 6 meses</a>
+        <a class="btn btn-perfil btn-p2 w-100" href="{{ url_for('prequery5') }}">Para una fecha específica, ¿cuál es la
+            hora pico donde el servicio es más utilizado?</a>
     </div>
+    <h4>Bitacora</h4>
+    <div class="row">
+        <a class="btn btn-perfil btn-p2 w-100" href="{{ url_for('bitacora') }}">Bitácora de operaciones en el sistema
+        </a>
+    </div>
+
 </div>
 
 {% endblock %}

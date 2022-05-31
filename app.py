@@ -1473,6 +1473,17 @@ def crearrepro():
     return render_template("crearrepro.html", fecha=fecha, cantidad=cantidad, reproducciones=reproducciones)
 
 
+@app.route('/bitacora/', methods=["POST", "GET"])
+def bitacora():
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    # top 10 directores
+    cursor.execute(
+        'select * from bitacora'
+    )
+    bitacora = cursor.fetchall()
+    return render_template("bitacora.html", bitacora=bitacora)
+
+
 @app.route('/logout')
 def logout():
     # Remove session data, this will log the user out
