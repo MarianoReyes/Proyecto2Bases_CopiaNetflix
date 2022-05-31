@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset="utf-8">
+  <title>Query 1</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
+  <!-- Google Fonts -->
+  <link href='https://fonts.googleapis.com/css?family=Passion+One' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Oxygen' rel='stylesheet' type='text/css'>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+ </head>
+ <body style="background-color:#8ea1b8;">
+ <div class="container">
+    <div class="row" style="margin-top: 10px;">
+        <div class="main-login main-center">
+            <h5>El top 5 de contenido visto en cada hora entre 9:00 a.m a 1:00 a.m para un mes dado</h5>
+            <table class="table">
+                <tr >
+                    <th>titulo</th>
+                    <th>vistos</th>
+                </tr>
+
+                {% for r in resultado %}
+                <tr>
+                    <td>{{r['titulo']}}</td>
+                    <td>{{r['vistos']}}</td>
+                    
+                </tr>
+                {% endfor %}  
+                
+            </table>
+            <br>
+            
+            <a href="{{ url_for('home') }}" class="btn btn-dark " style="background: #4a6ebb!important; margin: 5px 0;">Regresar al home</a>
+        </div>
+        
+    </div>
+  </div>
+
+ <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>  
+ </body>
+</html>
