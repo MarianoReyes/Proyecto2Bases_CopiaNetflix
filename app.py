@@ -1157,6 +1157,12 @@ def query6():
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     mes = request.form['mes']
     
+    # CREATE OR REPLACE VIEW top_copntenido_visto as
+    # select c.serie_pelicula, count(c.serie_pelicula) from contenido c 
+    # where extract (month from c.fecha_terminado ) = 06
+    # and extract (hour from c.fecha_terminado) not between 1 and 8 
+    # group by c.serie_pelicula order by count(c.serie_pelicula) desc limit 5  ;
+
     # El top 5 de contenido visto en cada hora entre 9:00 a.m a 1:00 a.m para un mes dado. 
     cursor.execute('CREATE OR REPLACE VIEW top_copntenido_visto as select c.serie_pelicula, count(c.serie_pelicula) from contenido c where extract (month from c.fecha_terminado ) = %s and extract (hour from c.fecha_terminado) not between 1 and 8 group by c.serie_pelicula order by count(c.serie_pelicula) desc limit 5', (mes))
     resultado = cursor.fetchall()
