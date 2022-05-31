@@ -1521,6 +1521,23 @@ def crearrepro():
 
     return render_template("crearrepro.html", fecha=fecha, cantidad=cantidad)
 
+@app.route('/prequery3A/', methods=["POST", "GET"])
+def prequery3A():
+    return render_template("prequery3A.html")
+
+
+@app.route('/query3A/', methods=["POST", "GET"])
+def query3A():
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    fecha1 = request.form['fechain']
+    fecha2 = request.form['fechain2']
+
+    # ejecucion de procedimiento almacenado
+    cursor.execute('select email , Count(accion) as Cantidad_Acciones from admins where fecha_accion between %s and %s group by email order by Cantidad_acciones desc limit 5;', (fecha1,fecha2))
+    adminstop = cursor.fetchall()
+
+    return render_template("query3A.html", fecha1=fecha1, fecha2=fecha2, adminstop=adminstop)
+
 
 @app.route('/bitacora/', methods=["POST", "GET"])
 def bitacora():

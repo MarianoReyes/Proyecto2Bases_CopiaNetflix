@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>El top 5 de los administradores que más modificaciones realizan en las cuentas de usuario para un rango de
+        fechas dado </title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
+    <!-- Google Fonts -->
+    <link href='https://fonts.googleapis.com/css?family=Passion+One' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Oxygen' rel='stylesheet' type='text/css'>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet"
+        id="bootstrap-css">
+</head>
+
+<body style="background-color:#8ea1b8;">
+    <div class="container">
+        <div class="row main">
+            <div class="main-login main-center">
+                <h5>Ingrese la Fecha donde desea ver a los administradores con mas acciones realizadas</h5>
+                <form action="{{url_for('query3A')}}" method="post" autocomplete="off">
+
+                    <div class="form-group">
+                        <label for="password" class="cols-sm-2 control-label">Fecha Inicial</label>
+                        <div class="cols-sm-10">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-lock fa-lg"
+                                        aria-hidden="true"></i></span>
+                                <input type="date" class="form-control" name="fechain" id="fechain" required
+                                    placeholder="Ingresa la fecha Inicial" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password" class="cols-sm-2 control-label">Fecha Final</label>
+                        <div class="cols-sm-10">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-lock fa-lg"
+                                        aria-hidden="true"></i></span>
+                                <input type="date" class="form-control" name="fechain2" id="fechain2" required
+                                    placeholder="Ingresa la fecha Final" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group ">
+                        {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                        {% for message in messages %}
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                        {% endwith %}
+                        <input type="submit" value="Mostrar Administradores" class="form-control btn btn-primary "
+                            style="background: #4a6ebb!important;margin:5px 0;" name="">
+
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>El top 5 de los administradores que más modificaciones realizan en las cuentas de usuario para un rango de
+        fechas dado </title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
+    <!-- Google Fonts -->
+    <link href='https://fonts.googleapis.com/css?family=Passion+One' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Oxygen' rel='stylesheet' type='text/css'>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet"
+        id="bootstrap-css">
+</head>
+
+<body style="background-color:#8ea1b8;">
+    <div class="container">
+        <div class="row" style="margin-top: 10px;">
+            <div class="main-login main-center" style="max-width: 90%!important;">
+                <br>
+                <br>
+                <h4>El top 5 de los administradores que más modificaciones realizan en las cuentas de usuario entre las
+                    fechas de {{fecha1}} y {{fecha2}} </h4>
+                <br>
+                <br>
+
+                <table class="table">
+                    <tr>
+                        <th>Email </th>
+                        <th>Cantidad_Acciones </th>
+                    </tr>
+
+                    {% for adminstop in adminstop %}
+                    <tr>
+                        <td>{{adminstop['email']}}</td>
+                        <td>{{adminstop['cantidad_acciones']}}</td>
+                    </tr>
+                    {% endfor %}
+
+                </table>
+
+                <a href="{{ url_for('home') }}" class="btn btn-dark "
+                    style="background: #4a6ebb!important; margin: 5px 0;">Regresar al Dashboard</a>
+
+                <br>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</body>
+
+</html>
