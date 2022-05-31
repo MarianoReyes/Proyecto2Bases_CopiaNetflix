@@ -14,12 +14,18 @@
  <div class="container">
     <div class="row" style="margin-top: 10px;">
         <div class="main-login main-center">
-            <h5>El  top  10  de  los  términos  que  los  usuarios  buscan</h5>
+            <h5>El top 5 de contenido visto en cada hora entre 9:00 a.m a 1:00 a.m para un mes dado</h5>
             <table class="table">
-                
-                {% for busqueda in busquedas %}
+                <tr >
+                    <th>titulo</th>
+                    <th>vistos</th>
+                </tr>
+
+                {% for r in resultado %}
                 <tr>
-                    <td>{{busqueda['busqueda']}}</td>
+                    <td>{{r['titulo']}}</td>
+                    <td>{{r['vistos']}}</td>
+                    
                 </tr>
                 {% endfor %}  
                 

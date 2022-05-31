@@ -1162,9 +1162,11 @@ def query6():
     # where extract (month from c.fecha_terminado ) = 06
     # and extract (hour from c.fecha_terminado) not between 1 and 8 
     # group by c.serie_pelicula order by count(c.serie_pelicula) desc limit 5  ;
+    # CREATE OR REPLACE VIEW contenido_visto as 
+    # select * from contenido;
 
     # El top 5 de contenido visto en cada hora entre 9:00 a.m a 1:00 a.m para un mes dado. 
-    cursor.execute('CREATE OR REPLACE VIEW top_copntenido_visto as select c.serie_pelicula, count(c.serie_pelicula) from contenido c where extract (month from c.fecha_terminado ) = %s and extract (hour from c.fecha_terminado) not between 1 and 8 group by c.serie_pelicula order by count(c.serie_pelicula) desc limit 5', (mes))
+    cursor.execute('select c.serie_pelicula as titulo , count(c.serie_pelicula) as vistos from contenido_visto c where extract (month from c.fecha_terminado ) = %s and extract (hour from c.fecha_terminado) not between 1 and 8 group by c.serie_pelicula order by count(c.serie_pelicula) desc limit 5', (mes,))
     resultado = cursor.fetchall()
     return render_template("query6.html", resultado=resultado)
 
