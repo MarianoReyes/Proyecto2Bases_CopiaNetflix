@@ -1476,9 +1476,9 @@ def crearrepro():
 @app.route('/bitacora/', methods=["POST", "GET"])
 def bitacora():
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    # top 10 directores
+    #Bitacora
     cursor.execute(
-        'select * from bitacora'
+        'select * from bitacora;'
     )
     bitacora = cursor.fetchall()
     return render_template("bitacora.html", bitacora=bitacora)
