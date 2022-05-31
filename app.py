@@ -1309,10 +1309,9 @@ def search(name):
         # Obtener la data enviada
         post = form.searched.data
 
-        #inserta lo buscado en una nueva tabla 
+        # inserta lo buscado en una nueva tabla
         cursor.execute(
-                    'INSERT INTO historial (busqueda) VALUES (%s)', (post,))
-
+            'INSERT INTO historial (busqueda) VALUES (%s)', (post,))
 
         search = "%{}%".format(post)
 
@@ -1342,9 +1341,8 @@ def search(name):
             'select serie_pelicula,imagen,link_repro from serie_peliculas where categoria like %s', (search,))
         categoria = cursor.fetchall()
 
-        
         conn.commit()
-        
+
         return render_template("search.html", form=form, searched=post, posts=posts, actores=actor, directores=director, categorias=categoria, perfil=perfil, anuncios=anuncios, tipocuenta=tipocuenta)
 
 
@@ -1439,42 +1437,44 @@ def query5():
 def prequery6():
     return render_template("prequery6.html")
 
+
 @app.route('/query6/', methods=["POST", "GET"])
 def query6():
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     mes = request.form['mes']
-    
+
     # CREATE OR REPLACE VIEW top_copntenido_visto as
-    # select c.serie_pelicula, count(c.serie_pelicula) from contenido c 
+    # select c.serie_pelicula, count(c.serie_pelicula) from contenido c
     # where extract (month from c.fecha_terminado ) = 06
-    # and extract (hour from c.fecha_terminado) not between 1 and 8 
+    # and extract (hour from c.fecha_terminado) not between 1 and 8
     # group by c.serie_pelicula order by count(c.serie_pelicula) desc limit 5  ;
-    # CREATE OR REPLACE VIEW contenido_visto as 
+    # CREATE OR REPLACE VIEW contenido_visto as
     # select * from contenido;
 
-    # El top 5 de contenido visto en cada hora entre 9:00 a.m a 1:00 a.m para un mes dado. 
+    # El top 5 de contenido visto en cada hora entre 9:00 a.m a 1:00 a.m para un mes dado.
     cursor.execute('select c.serie_pelicula as titulo , count(c.serie_pelicula) as vistos from contenido_visto c where extract (month from c.fecha_terminado ) = %s and extract (hour from c.fecha_terminado) not between 1 and 8 group by c.serie_pelicula order by count(c.serie_pelicula) desc limit 5', (mes,))
     resultado = cursor.fetchall()
     return render_template("query6.html", resultado=resultado)
 
+
 @app.route('/query7/', methods=["POST", "GET"])
 def query7():
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    #create index busqueda on historial(busqueda);
+    # create index busqueda on historial(busqueda);
     # create MATERIALIZED VIEW busquedas AS
     # select busqueda , count(*) as busquedas
     #     from historial
     # group by busqueda  order by busquedas desc limit 10;
- 
-    #manda a refrescar la vista
+
+    # manda a refrescar la vista
     cursor.execute(
-        'REFRESH MATERIALIZED VIEW busquedas' )
+        'REFRESH MATERIALIZED VIEW busquedas')
 
     # manda a llamar el query
     cursor.execute(
-        'select * from busquedas' )
+        'select * from busquedas')
     busquedas = cursor.fetchall()
-    return render_template("query7.html",busquedas=busquedas)
+    return render_template("query7.html", busquedas=busquedas)
 
 
 @app.route('/hacer_admins/', methods=['GET', 'POST'])
@@ -1514,19 +1514,18 @@ def crearrepro():
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     fecha = request.form['fechain']
     cantidad = request.form['cantidad']
+
     # ejecucion de procedimiento almacenado
-    cursor.execute('call inserccion_aleatoria(%s, %s);', [fecha, cantidad, ])
+    cursor.execute('call inserccion_aleatoria(%s, %s)', [fecha, cantidad, ])
     conn.commit()
-    # reproducciones generadas en esa fecha dada
-    cursor.execute('select serie_pelicula as sop, nombre_perfil as nombre_perfil, correo_cuenta as correo_cuenta from contenido where fecha_terminado = %s', (fecha,))
-    reproducciones = cursor.fetchall()
-    return render_template("crearrepro.html", fecha=fecha, cantidad=cantidad, reproducciones=reproducciones)
+
+    return render_template("crearrepro.html", fecha=fecha, cantidad=cantidad)
 
 
 @app.route('/bitacora/', methods=["POST", "GET"])
 def bitacora():
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    #Bitacora
+    # Bitacora
     cursor.execute(
         'select * from bitacora;'
     )
