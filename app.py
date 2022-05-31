@@ -1173,7 +1173,7 @@ def vistos(sp, name, cuenta):
 
     if contador == '0':
         cursor.execute(
-            'insert into contenido (serie_pelicula,nombre_perfil,correo_cuenta,date(fecha_terminado)) values (%s,%s,%s,%s)', (sp, name, cuenta, datetime.datetime.now(),))
+            'insert into contenido (serie_pelicula,nombre_perfil,correo_cuenta,fecha_terminado) values (%s,%s,%s,%s)', (sp, name, cuenta, datetime.datetime.now(),))
         conn.commit()
 
         cursor.execute(
@@ -1227,7 +1227,7 @@ def viendo(sp, name, cuenta):
 
     if contador == '0':
         cursor.execute(
-            'insert into viendo (serie_pelicula,nombre_perfil,cuenta) values (%s,%s,%s)', (sp, name, cuenta))
+            'insert into viendo (serie_pelicula,nombre_perfil,cuenta,fecha_comienzo) values (%s,%s,%s,%s)', (sp, name, cuenta,datetime.datetime.now(),))
         conn.commit()
 
         print('Agregado')
