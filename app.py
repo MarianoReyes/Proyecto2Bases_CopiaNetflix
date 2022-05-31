@@ -1491,6 +1491,24 @@ def hacer_admins():
 @app.route('/hacer_admin/<usuario>', methods=['GET', 'POST'])
 def hacer_admin(usuario):
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    cursor.execute('SELECT * FROM cuentas WHERE id = %s', [session['id']])
+    account = cursor.fetchone()
+
+    email1 = account['email']
+
+    cursor.execute('''create or replace function update_cuenta()
+                    returns trigger as 
+                    $BODY$
+                    begin 
+                        insert into bitacora (correo_cuenta , accion , fecha_accion ) values (%s,%s,%s);
+                        return new;
+                    end;
+                    $BODY$
+                    language 'plpgsql'
+                    ;''', (email1, "Updata Cuenta", datetime.datetime.now()))
+    conn.commit()
+
     cursor.execute(
         'SELECT email FROM cuentas WHERE username=%s', (usuario,))
     email = cursor.fetchone()
@@ -1532,7 +1550,10 @@ def query3A():
     fecha1 = request.form['fechain']
     fecha2 = request.form['fechain2']
 
-    # ejecucion de procedimiento almacenado
+    cursor.execute('REFRESH MATERIALIZED VIEW admins')
+    conn.commit()
+    
+    # ejecucion de vista materializada 
     cursor.execute('select email , Count(accion) as Cantidad_Acciones from admins where fecha_accion between %s and %s group by email order by Cantidad_acciones desc limit 5;', (fecha1,fecha2))
     adminstop = cursor.fetchall()
 
