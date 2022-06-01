@@ -1476,6 +1476,26 @@ def query7():
     busquedas = cursor.fetchall()
     return render_template("query7.html", busquedas=busquedas)
 
+@app.route('/query8/', methods=["POST", "GET"])
+def query8():
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    #create index series_peliculas on viendo(serie_pelicula);
+    # CREATE materialized view peliculas_sin_terminar as 
+    # select v.serie_pelicula as titulo, count(v.serie_pelicula) as conteo from viendo v 
+    # where date_part('day', CURRENT_TIMESTAMP - v.fecha_comienzo::timestamp) >= 20
+    # group by titulo order by conteo desc limit 20 ;
+
+
+    # manda a refrescar la vista
+    cursor.execute(
+        'REFRESH MATERIALIZED VIEW peliculas_sin_terminar')
+
+    # manda a llamar el query
+    cursor.execute(
+        'select * from peliculas_sin_terminar')
+    busquedas = cursor.fetchall()
+    return render_template("query8.html", busquedas=busquedas)
 
 @app.route('/hacer_admins/', methods=['GET', 'POST'])
 def hacer_admins():
